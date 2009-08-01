@@ -30,6 +30,7 @@ import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;
 
 /**
+ * Finds and returns trace instructions in a file.
  *
  * @author Joao Bispo
  */
