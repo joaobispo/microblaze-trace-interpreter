@@ -18,8 +18,10 @@
 package org.ancora.MicroblazeInterpreter.Support;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.TraceMemory;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.jCommons.Disk;
@@ -36,13 +38,19 @@ public class ExtractOperations {
 
    public static void main(String[] args) {
       Disk disk = Disk.getDisk();
-      final String traceSuffix = ".txt";
+
+      String[] cleanArgs = processArgs(args);
+
+      //String tracesFolderpath = "./traces";
+      String tracesFolderpath = cleanArgs[INDEX_TRACE_FOLDER];
+      final String traceSuffix = cleanArgs[INDEX_TRACE_EXTENSION];
 
       // Specify folder with trace files
-      String tracesFolderpath = "./traces";
+      System.out.println("Opening folder \""+tracesFolderpath+"\"...");
       File tracesFolder = disk.safeFolder(tracesFolderpath);
 
       // Get all traces files
+      System.out.print("Looking for files which end in \""+traceSuffix+"\"...");
       File[] candidateTraceFiles = tracesFolder.listFiles();
       List<File> traceFiles = new LinkedList<File>();
       for(File file : candidateTraceFiles) {
@@ -51,16 +59,33 @@ public class ExtractOperations {
             traceFiles.add(file);
          }
       }
+       System.out.println(" found "+traceFiles.size()+" files.");
 
       // Process each file
-      processTraceFile(traceFiles.get(3));
-      //for(File traceFile : traceFiles) {
-      //   processTraceFile(traceFile);
-      //}
+      Set<String> operations = new HashSet<String>();
 
+      //processTraceFile(traceFiles.get(3), operations);
+
+      
+      for(File traceFile : traceFiles) {
+         processTraceFile(traceFile, operations);
+      }
+
+
+       System.out.println("Operations ("+operations.size()+"):");
+       for(String op : operations) {
+           System.out.println(op);
+       }
    }
 
-   public static void processTraceFile(File traceFile) {
+   /**
+    * Reads a trace from a file and puts the name of the operations it finds
+    * in a set.
+    *
+    * @param traceFile file with a MicroBlaze trace
+    * @param operations set where the results will be put
+    */
+   public static void processTraceFile(File traceFile, Set<String> operations) {
       TraceMemory memory = new TraceMemory(traceFile);
       InstructionParser parser = new InstructionParser();
 
@@ -72,10 +97,32 @@ public class ExtractOperations {
 
          parser.parseInstruction(instruction);         
          
+         // Store operation
+         operations.add(parser.getOpName());
+         
          instruction = memory.nextInstruction();
       }
 
 
    }
 
+   /**
+    * Process the command line arguments
+    *
+    * @param args
+    * @return
+    */
+    private static String[] processArgs(String[] args) {
+        if(args.length != 2) {
+            System.out.println("Usage: [Trace_Folder] [Traces_Extension]");
+            return null;
+        }
+
+        return args;
+    }
+
+
+    // INSTANCE VARIABLES
+    private static final int INDEX_TRACE_FOLDER = 0;
+    private static final int INDEX_TRACE_EXTENSION = 1;
 }
