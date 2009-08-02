@@ -70,8 +70,8 @@ public class ExtractOperations {
          //Long addressLong = ExtraCommons.hexa2long(address);
          //System.out.println(addressLong);
 
-         parser.parseInstruction(instruction);
-
+         parser.parseInstruction(instruction);         
+         
          instruction = memory.nextInstruction();
       }
 
