@@ -42,7 +42,6 @@ public class ExtractOperations {
 
       String[] cleanArgs = processArgs(args);
 
-      //String tracesFolderpath = "./traces";
       String tracesFolderpath = cleanArgs[INDEX_TRACE_FOLDER];
       final String traceSuffix = cleanArgs[INDEX_TRACE_EXTENSION];
 
@@ -92,11 +91,6 @@ public class ExtractOperations {
 
       String instruction = memory.nextInstruction();
       while(instruction != null) {
-         //String address = InstructionParser.getMemoryAddress(instruction);
-         //Long addressLong = ExtraCommons.hexa2long(address);
-         //System.out.println(addressLong);
-
-         //parser.parseInstructionLocal(instruction);
          TraceData data = InstructionParser.parseInstruction(instruction);
 
          // Store operation

@@ -27,7 +27,7 @@ import org.ancora.jCommons.DefaultConsole;
  */
 public class ExtraCommons {
 
-      /**
+   /**
     * Extracts the memory address from the given instruction. If the address is
     * not valid, returns -1.
     *

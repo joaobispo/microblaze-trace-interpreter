@@ -90,8 +90,6 @@ public class TraceMemory {
         }
         
         // While there are lines and a trace instruction was not found, loop.
-        //boolean hasLines = true;
-        //boolean isTrace = false;
         String line = null;
         while(true) {
             // Read next line
