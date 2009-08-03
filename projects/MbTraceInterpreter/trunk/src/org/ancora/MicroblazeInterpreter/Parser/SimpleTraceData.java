@@ -20,7 +20,7 @@ package org.ancora.MicroblazeInterpreter.Parser;
 /**
  *  Simple immutable implementation of interface TraceData.
  *
- * @author Administrador
+ * @author Joao Bispo
  */
 public class SimpleTraceData implements TraceData{
 
