@@ -30,8 +30,10 @@ package org.ancora.MicroblazeInterpreter.Parser;
  *
  * @author Joao Bispo
  */
-public class InstructionParser implements TraceData {
+public class InstructionParser {
+//public class InstructionParser implements TraceData {
 
+    /*
    public InstructionParser() {
       opName = null;
       registers = emptyRegisters;
@@ -40,6 +42,42 @@ public class InstructionParser implements TraceData {
       //rB = null;
       imm = null;
    }
+     */
+
+    /**
+     * Parse its information, storing the values in a new TraceData object.
+     *
+     * <p>This method assumes that the instruction begins that the 13th
+     * character (10 chars for instruction address + 2 whitespaces).
+     *
+     * @param traceInstruction a trace instruction
+     * @return a TraceData object with the parsed information
+     */
+    public static TraceData parseInstruction(String traceInstruction) {
+        String instruction;
+        String opName = null;
+        String[] results = new String[TraceData.MAX_REGISTERS];
+        Short imm = null;
+
+        // Cut the memory address
+        instruction = traceInstruction.substring(12);
+
+        // Find first space. This will cut the operation name
+        int endIndex = instruction.indexOf(' ');
+        opName = instruction.substring(0, endIndex);
+
+        // Cut operation name
+        instruction = instruction.substring(endIndex);
+
+        // Extract the other args
+        int numArgs = extractsArgs(instruction, results);
+
+        // Fill the variables
+        imm = extractImmediate(results, numArgs);
+
+        return new SimpleTraceData(opName, results, imm);
+    }
+   
 
    /**
     * Parse its information, storing the values in his instance variables.
@@ -49,7 +87,8 @@ public class InstructionParser implements TraceData {
     *
     * @param traceInstruction a trace instruction
     */
-   public void parseInstruction(String traceInstruction) {
+    /*
+   public void parseInstructionLocal(String traceInstruction) {
       cleanVariables();
 
       String instruction;
@@ -68,7 +107,7 @@ public class InstructionParser implements TraceData {
       int numArgs = extractsArgs(instruction, results);
 
       // Fill the variables
-      fillVariables(results, numArgs);
+      extractImmediate(results, numArgs);
 
       // DEBUG
       // Test if parsing is correct
@@ -81,6 +120,7 @@ public class InstructionParser implements TraceData {
       //System.out.println("opName:"+opName);
       //System.out.println(instruction);
    }
+     */
 
    /**
     * Extracts the arguments from an instruction string.
@@ -90,7 +130,7 @@ public class InstructionParser implements TraceData {
     * @param results String array to hold the parsed arguments
     * @return the number of arguments found
     */
-   private int extractsArgs(String instruction, String[] results) {
+   private static int extractsArgs(String instruction, String[] results) {
       int numArgs = 0;
 
       // Check the first comma
@@ -185,16 +225,20 @@ public class InstructionParser implements TraceData {
     */
 
    /**
+    * Modifies the given array so it only constains registers, extracts and
+    * returns an Immediate value, if found.
     * Fills this class variables.
-    * 
     * 
     * @param results a string array with the values of the variables
     * @param numArgs number of valid arguments in the array
+    * @return The value of Immediate, or null if not found.
     */
-   private void fillVariables(String[] results, int numArgs) {
+    private static Short extractImmediate(String[] results, int numArgs) {
+        Short imm = null;
 
-      // Check if the first character of the last variable is a letter.
-      // If yes, it's a register. Else, it's an immediate.
+        // Immediates if present in an instruction are always the last variable.
+        // Check if the first character of the last variable is a letter.
+        // If yes, it's a register. Else, it's an immediate.
       char firstChar = results[numArgs-1].charAt(0);
       boolean firstCharIsLetter = Character.isLetter(firstChar);
 
@@ -202,19 +246,17 @@ public class InstructionParser implements TraceData {
          // Assign immediate value
          imm = Short.valueOf(results[numArgs - 1]);
 
-         // Invalidate value so the array can be assigned to the registers
+         // Invalidate value so the array can be assigned to TraceData object.
          results[numArgs-1] = null;
       }
 
-      // Assign registers
-      registers = results;
-
-      
+      return imm;   
    }
 
    /**
     * Cleans the variables
     */
+    /*
    private void cleanVariables() {
       opName = null;
       registers = emptyRegisters;
@@ -223,7 +265,9 @@ public class InstructionParser implements TraceData {
       //rB = null;
       imm = null;
    }
+     */
 
+    /*
    public String getOpName() {
       return opName;
    }
@@ -243,11 +287,12 @@ public class InstructionParser implements TraceData {
    public Short getImm() {
       return imm;
    }
-
+*/
+    /*
    public String toStringVariables() {
       int capacity = 100;
       StringBuilder builder = new StringBuilder(capacity);
-
+*/
       //builder.append(opName+" ");
       //int currentIndex = 0;
       //String register = registers[0];
@@ -263,7 +308,7 @@ public class InstructionParser implements TraceData {
       }
        */
 
-
+/*
       // Print registers until a null is found
       for(int i=0; i<registers.length; i++) {
          if(registers[i] == null) {
@@ -294,27 +339,27 @@ public class InstructionParser implements TraceData {
       return builder.toString();
    }
 
-
+*/
 
    //INSTANCE VARIABLES
    
    // Definitions
-   private static final int MAX_INST_ARGS = 3;
+   //private static final int MAX_INST_ARGS = 3;
    private static final char COMMA = ',';
 
-   private static final int RD_INDEX = 0;
-   private static final int RA_INDEX = 1;
-   private static final int RB_INDEX = 2;
+   //private static final int RD_INDEX = 0;
+   //private static final int RA_INDEX = 1;
+   //private static final int RB_INDEX = 2;
 
 
    // State
-   private String opName;
-   private String[] registers;
+   //private String opName;
+   //private String[] registers;
    //String rD;
    //String rA;
    //String rB;
-   private Short imm;
-   private static final String[] emptyRegisters = new String[MAX_INST_ARGS];
+   //private Short imm;
+   private static final String[] emptyRegisters = new String[TraceData.MAX_REGISTERS];
 
 
 

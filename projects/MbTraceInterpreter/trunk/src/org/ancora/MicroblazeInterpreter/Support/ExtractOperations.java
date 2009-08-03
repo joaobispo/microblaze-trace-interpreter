@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.TraceMemory;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
+import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 import org.ancora.jCommons.Disk;
 
 /**
@@ -87,7 +88,7 @@ public class ExtractOperations {
     */
    public static void processTraceFile(File traceFile, Set<String> operations) {
       TraceMemory memory = new TraceMemory(traceFile);
-      InstructionParser parser = new InstructionParser();
+      //InstructionParser parser = new InstructionParser();
 
       String instruction = memory.nextInstruction();
       while(instruction != null) {
@@ -95,10 +96,11 @@ public class ExtractOperations {
          //Long addressLong = ExtraCommons.hexa2long(address);
          //System.out.println(addressLong);
 
-         parser.parseInstruction(instruction);         
-         
+         //parser.parseInstructionLocal(instruction);
+         TraceData data = InstructionParser.parseInstruction(instruction);
+
          // Store operation
-         operations.add(parser.getOpName());
+         operations.add(data.getOpName());
          
          instruction = memory.nextInstruction();
       }
@@ -115,7 +117,8 @@ public class ExtractOperations {
     private static String[] processArgs(String[] args) {
         if(args.length != 2) {
             System.out.println("Usage: [Trace_Folder] [Traces_Extension]");
-            return null;
+            System.out.println("Example: ./traces .txt");
+            System.exit(1);
         }
 
         return args;
