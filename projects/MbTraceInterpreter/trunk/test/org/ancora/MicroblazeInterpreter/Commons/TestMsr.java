@@ -29,7 +29,8 @@ public class TestMsr {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        testLoad();
+        //testLoad();
+        testBitOperations();
     }
 
    private static void testLoad() {
@@ -48,6 +49,14 @@ public class TestMsr {
       System.out.println("Bit:"+Integer.toBinaryString(MsrTools.writeBit(MsrBit.C, 0, msr)));
       //System.out.println("Bit:"+Integer.toBinaryString(MsrTools.writeBit(MsrBit.C, 1, msr)));
       //System.out.println("Bit:"+Integer.toBinaryString(MsrTools.writeBit(MsrBit.C, 2, msr)));
+   }
+
+   private static void testBitOperations() {
+      int target;
+
+      target = 1;
+      System.out.println("Before:"+Integer.toBinaryString(target));
+      System.out.println(Integer.toBinaryString(BitOperations.writeBits(1, 3, 4, target)));
    }
 
 }

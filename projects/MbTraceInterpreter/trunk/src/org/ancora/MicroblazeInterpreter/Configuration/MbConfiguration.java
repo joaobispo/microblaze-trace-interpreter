@@ -91,6 +91,7 @@ public class MbConfiguration {
     */
    private void updateCache() {
       C_USE_MMU = Integer.valueOf(configTable.get(MpdParameter.C_USE_MMU));
+      C_AREA_OPTIMIZED = Integer.valueOf(configTable.get(MpdParameter.C_AREA_OPTIMIZED));
    }
 
    // Getters for cached parameters (commonly used).
@@ -98,9 +99,16 @@ public class MbConfiguration {
       return C_USE_MMU;
    }
 
+   public int C_AREA_OPTIMIZED() {
+      return C_AREA_OPTIMIZED;
+   }
+
+
+
    // INSTANCE VARIABLES
    // Cache
    private int C_USE_MMU;
+   private int C_AREA_OPTIMIZED;
 
    // State
    private final Map<MpdParameter, String> configTable;

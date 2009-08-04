@@ -25,9 +25,9 @@ package org.ancora.MicroblazeInterpreter.HardwareBlocks;
 public enum SpecialRegister {
 
    rpc(0x0000),
-   rmsr(0x001);
+   rmsr(0x001),
    //rear(),
-   //resr(),
+   resr(0x0005);
    //rfsr(),
    //rbtr(),
    //redr(),

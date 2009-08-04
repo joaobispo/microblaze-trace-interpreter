@@ -42,7 +42,7 @@ public class MsrTools {
       int mask = 1 << offset;
 
       // Read bit
-      int readValue = (msr & mask) >> offset;
+      int readValue = (msr & mask) >>> offset;
 
       return readValue;
    }

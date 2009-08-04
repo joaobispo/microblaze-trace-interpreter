@@ -21,21 +21,8 @@ package org.ancora.MicroblazeInterpreter.Configuration;
  *
  * @author Joao Bispo
  */
-public enum MpdParameter {
-
-   // Parameters
-   C_AREA_OPTIMIZED("0"),
-   C_USE_MMU("0");
-
-
-   public String getDefault() {
-      return defaultValue;
-   }
-
-   private MpdParameter(String defaultValue) {
-      this.defaultValue = defaultValue;
-   }
-
-   // INSTANCE VARIABLES
-   private final String defaultValue;
+public interface Definitions {
+   
+   // Number of bits indexed by special registers
+   int MAX_BITS = 31;
 }
