@@ -53,6 +53,32 @@ public class Arithmetic {
       return decodedAddress;
    }
 
+   /**
+    * Extracts the memory address from the given instruction. If the address is
+    * not valid, returns -1.
+    *
+    * <p>A long is used because Java as no support for unsigned types.
+    * Therefore, a long is used to store an unsigned integer.
+    *
+    *
+    * @param traceInstruction a trace instruction
+    * @return a long with the value of the memory address, or -1 if an address
+    * is not valid
+    */
+   public static int hexa2int(String hexadecimal) {
+
+      int decodedAddress;
+      try{
+         decodedAddress = Integer.valueOf(hexadecimal, 16);
+      } catch(NumberFormatException ex) {
+         console.warn("hexa2int: Could not decode hexadecimal " +
+                 "string ("+hexadecimal+")");
+         decodedAddress = -1;
+      }
+
+      return decodedAddress;
+   }
+
 
    // INSTANCE VARIABLES
    private static Console console = DefaultConsole.getConsole();
