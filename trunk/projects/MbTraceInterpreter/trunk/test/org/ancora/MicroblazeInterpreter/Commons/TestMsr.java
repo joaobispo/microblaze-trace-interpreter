@@ -33,6 +33,7 @@ public class TestMsr {
         testBitOperations();
     }
 
+    /*
    private static void testLoad() {
       int msr;
 
@@ -50,6 +51,7 @@ public class TestMsr {
       //System.out.println("Bit:"+Integer.toBinaryString(MsrTools.writeBit(MsrBit.C, 1, msr)));
       //System.out.println("Bit:"+Integer.toBinaryString(MsrTools.writeBit(MsrBit.C, 2, msr)));
    }
+     */
 
    private static void testBitOperations() {
       int target;
