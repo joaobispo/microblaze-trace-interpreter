@@ -17,6 +17,8 @@
 
 package org.ancora.MicroblazeInterpreter.HardwareBlocks;
 
+import static org.ancora.MicroblazeInterpreter.Configuration.Definitions.MAX_BITS;
+
 /**
  * Represents the individual bits of the Machine Status Register
  *
@@ -24,22 +26,24 @@ package org.ancora.MicroblazeInterpreter.HardwareBlocks;
  */
 public enum MsrBit {
 
-   CC(0),
-   VMS(17),
-   VM(18),
-   UMS(19),
-   UM(20),
-   PVR(21),
-   EIP(22),
-   EE(23),
-   DCE(24),
-   DZO(25),
-   ICE(26),
-   FSL(27),
-   BIP(28),
-   C(29),
-   IE(30),
-   BE(31);
+   CC(MAX_BITS - 0),
+   VMS(MAX_BITS - 17),
+   VM(MAX_BITS - 18),
+   UMS(MAX_BITS - 19),
+   UM(MAX_BITS - 20),
+   PVR(MAX_BITS - 21),
+   EIP(MAX_BITS - 22),
+   EE(MAX_BITS - 23),
+   DCE(MAX_BITS - 24),
+   DZO(MAX_BITS - 25),
+   ICE(MAX_BITS - 26),
+   FSL(MAX_BITS - 27),
+   BIP(MAX_BITS - 28),
+   C(MAX_BITS - 29),
+   IE(MAX_BITS - 30),
+   BE(MAX_BITS - 31);
+
+
 
    private MsrBit(int bitPosition) {
       this.bitPosition = bitPosition;
@@ -52,6 +56,11 @@ public enum MsrBit {
       return bitPosition;
    }
 
+
+
    // INSTANCE VARIABLES
+   // State
    private final int bitPosition;
+
+
 }

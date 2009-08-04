@@ -42,8 +42,8 @@ public class BitOperations {
                     carry+")");
         }
 
-        System.out.println("rA:"+Integer.toBinaryString(rA));
-        System.out.println("rB:"+Integer.toBinaryString(rB));
+        //System.out.println("rA:"+Integer.toBinaryString(rA));
+        //System.out.println("rB:"+Integer.toBinaryString(rB));
 
         // Extend operands to long and mask them
         long lRa = rA & MASK_32_BITS;
@@ -52,21 +52,116 @@ public class BitOperations {
         long lCarry = carry;
 
 
-        System.out.println("lRa:"+Long.toBinaryString(lRa));
-        System.out.println("lRb:"+Long.toBinaryString(lRb));
+        //System.out.println("lRa:"+Long.toBinaryString(lRa));
+        //System.out.println("lRb:"+Long.toBinaryString(lRb));
 
         // Do the summation
         long result = lRa + lRb + lCarry;
 
-        System.out.println("Result:"+Long.toBinaryString(result));
+        //System.out.println("Result:"+Long.toBinaryString(result));
 
         // Get the carry bit
-        int carryOut = (int) ((result & MASK_BIT_33) >> 32);
+        int carryOut = (int) ((result & MASK_BIT_33) >>> 32);
         return carryOut;
     }
 
+    /**
+     * Performs a 32-bit unsigned division.
+     * 
+     * @param a
+     * @param b
+     * @return
+     */
+    public static int unsignedDiv(int a, int b) {
+         final long la = a & MASK_32_BITS;
+         final long lb = b & MASK_32_BITS;
+
+         return (int) (la / lb);
+    }
+
+   /**
+    * Sets a specific bit of an int.
+    *
+    * @param bit the bit to set. The least significant bit is bit 0
+    * @param target the integer where the bit will be set
+    * @return the updated value of the target
+    */
+   public static int setBit(int bit, int target) {;
+      // Create mask
+      int mask = 1 << bit;
+      // Set bit
+      return target | mask;
+   }
+
+   /**
+    * Clears a specific bit of an int.
+    *
+    * @param bit the bit to clear. The least significant bit is bit 0
+    * @param target the integer where the bit will be cleared
+    * @return the updated value of the target
+    */
+   public static int clearBit(int bit, int target) {
+      // Create mask
+      int mask = 1 << bit;
+      // Clear bit
+      return target & ~mask;
+   }
+
+   /**
+    * Writes a value to a specific bit of an int.
+    *
+    * @param bit the bit to write
+    * @param value 0 for clearing the bit, 1 for setting the bit
+    * @param target the integer where the bit will be written
+    * @return the updated value of the integer
+    */
+   public static int writeBit(int bit, int value, int target) {
+      if(value == 0) {
+         return clearBit(bit, target);
+      }
+      else if(value == 1) {
+         return setBit(bit, target);
+      }
+      else {
+         console.warn("writeBit: Value is not 1 or 0 ("+value+")");
+         return target;
+      }
+   }
+   
+   /**
+    * Gets the a single bit of the target.
+    * 
+    * @param position
+    * @param target
+    * @return
+    */
+   public static int getBit(int position, int target) {
+      return (target >>> position) & MASK_BIT_1;  
+   }
+
+   /**
+    * Writes a set of bits to an intenger.
+    *
+    * @param position the least significat bit that will be written
+    * @param size how many bits of the value, from the least significant bit,
+    * will be used to write
+    * @param value the bits to write
+    * @param target the integer where the bits will be written
+    * @return the updated value of the integer
+    */
+   public static int writeBits(int position, int size, int value, int target) {
+      for(int i=0; i<size; i++) {
+         // Get bit to write
+         int bitToWrite = getBit(i, value);
+         target = writeBit(i+position, bitToWrite, target);
+      }
+
+      return target;
+   }
+
     private static final long MASK_32_BITS = 0xFFFFFFFFL;
     private static final long MASK_BIT_33 = 0x100000000L;
+    private static final int MASK_BIT_1 = 0x1;
     private static final Console console = DefaultConsole.getConsole();
 
 }

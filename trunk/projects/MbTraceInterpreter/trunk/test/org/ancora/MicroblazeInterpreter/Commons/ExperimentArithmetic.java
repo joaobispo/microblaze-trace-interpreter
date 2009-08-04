@@ -61,12 +61,12 @@ public class ExperimentArithmetic {
         long carryMask = 0x0000000100000000L;
         long carry = result & carryMask;
         System.out.println("CryMsk:"+Long.toBinaryString(carryMask));
-        System.out.println("Carry:"+(carry >> 32));
+        System.out.println("Carry:"+(carry >>> 32));
 
         // Write Carry bit in position 29
         int msr = 0;
         System.out.println("MSR:"+Integer.toBinaryString(msr));
-        int newCarry = (int)(carry >> 32);
+        int newCarry = (int)(carry >>> 32);
         int CARRY_SHIFT = 2;
         msr = msr | (newCarry << CARRY_SHIFT);
         System.out.println("MSR:"+Integer.toBinaryString(msr));
