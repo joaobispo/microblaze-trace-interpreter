@@ -17,6 +17,7 @@
 
 package org.ancora.MicroblazeInterpreter.Instructions;
 
+import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 
 /**
@@ -89,7 +90,7 @@ public class MbAdd implements MbInstruction {
 
         // If kBit, calculate carry out
         if(!kBit) {
-            int carryOut = InstructionCommons.getCarryOut(rA, rB, carry);
+            int carryOut = BitOperations.getCarryOut(rA, rB, carry);
             // SPR <- CarryOut
         }
 

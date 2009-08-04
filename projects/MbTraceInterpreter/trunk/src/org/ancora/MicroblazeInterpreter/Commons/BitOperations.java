@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.Instructions;
+package org.ancora.MicroblazeInterpreter.Commons;
 
 import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;
@@ -26,7 +26,7 @@ import org.ancora.jCommons.DefaultConsole;
  *
  * @author Joao Bispo
  */
-public class InstructionCommons {
+public class BitOperations {
 
     /**
      * Calculates the carryOut of the sum of rA with rB and carry.
@@ -36,7 +36,7 @@ public class InstructionCommons {
      * @param carry the carry from the previous operation. Should be 0 or 1.
      * @return 1 if there is carry out, or 0 if not.
      */
-    static int getCarryOut(int rA, int rB, int carry) {
+    public static int getCarryOut(int rA, int rB, int carry) {
         if(carry != 0 && carry != 1) {
             console.warn("getCarryOut: Carry is different than 0 or 1 ("+
                     carry+")");

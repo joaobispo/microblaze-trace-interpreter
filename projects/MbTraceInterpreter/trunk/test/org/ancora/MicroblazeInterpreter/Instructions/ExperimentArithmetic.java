@@ -17,6 +17,7 @@
 
 package org.ancora.MicroblazeInterpreter.Instructions;
 
+import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.MicroblazeInterpreter.Parser.SimpleTraceData;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 
@@ -103,7 +104,7 @@ public class ExperimentArithmetic {
     }
 
     /**
-     * Tests for class InstructionCommons
+     * Tests for class BitOperations
      */
     private static void testExtra() {
 
@@ -111,7 +112,7 @@ public class ExperimentArithmetic {
         int rB = -1;
         int carry = 0;
 
-        int carryOut = InstructionCommons.getCarryOut(rA, rB, carry);
+        int carryOut = BitOperations.getCarryOut(rA, rB, carry);
 
         System.out.println("CarryOut:"+carryOut);
     }

@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.Support;
+package org.ancora.MicroblazeInterpreter.Commons;
 
 import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;
@@ -25,7 +25,7 @@ import org.ancora.jCommons.DefaultConsole;
  *
  * @author Joao Bispo
  */
-public class ExtraCommons {
+public class Arithmetic {
 
    /**
     * Extracts the memory address from the given instruction. If the address is
