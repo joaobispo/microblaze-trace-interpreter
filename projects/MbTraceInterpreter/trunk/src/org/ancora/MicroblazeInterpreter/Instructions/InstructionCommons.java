@@ -26,7 +26,7 @@ import org.ancora.jCommons.DefaultConsole;
  *
  * @author Joao Bispo
  */
-public class Extra {
+public class InstructionCommons {
 
     /**
      * Calculates the carryOut of the sum of rA with rB and carry.
