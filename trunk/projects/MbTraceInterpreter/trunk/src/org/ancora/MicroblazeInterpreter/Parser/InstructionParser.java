@@ -45,7 +45,7 @@ public class InstructionParser {
         String instruction;
         String opName = null;
         String[] results = new String[TraceData.MAX_REGISTERS];
-        Short imm = null;
+        Integer imm = null;
 
         // Cut the memory address
         instruction = traceInstruction.substring(12);
@@ -131,8 +131,8 @@ public class InstructionParser {
     * @param numArgs number of valid arguments in the array
     * @return The value of Immediate, or null if not found.
     */
-    private static Short extractImmediate(String[] results, int numArgs) {
-        Short imm = null;
+    private static Integer extractImmediate(String[] results, int numArgs) {
+        Integer imm = null;
 
         // Immediates if present in an instruction are always the last variable.
         // Check if the first character of the last variable is a letter.
@@ -142,7 +142,7 @@ public class InstructionParser {
 
       if (!firstCharIsLetter) {
          // Assign immediate value
-         imm = Short.valueOf(results[numArgs - 1]);
+         imm = Integer.valueOf(results[numArgs - 1]);
 
          // Invalidate value so the array can be assigned to TraceData object.
          results[numArgs-1] = null;

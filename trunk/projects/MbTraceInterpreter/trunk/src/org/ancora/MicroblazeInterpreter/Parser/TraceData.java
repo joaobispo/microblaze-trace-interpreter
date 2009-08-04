@@ -44,7 +44,7 @@ public interface TraceData {
    /**
     * @return the immediate value, or null if not defined
     */
-   public Short getImm();
+   public Integer getImm();
 
    /**
     * The maximum number of registers a MicroBlaze trace instruction can have.

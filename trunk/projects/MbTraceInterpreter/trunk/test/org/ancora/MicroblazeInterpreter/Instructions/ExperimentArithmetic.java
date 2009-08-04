@@ -17,6 +17,9 @@
 
 package org.ancora.MicroblazeInterpreter.Instructions;
 
+import org.ancora.MicroblazeInterpreter.Parser.SimpleTraceData;
+import org.ancora.MicroblazeInterpreter.Parser.TraceData;
+
 /**
  *
  * @author Administrador
@@ -27,7 +30,9 @@ public class ExperimentArithmetic {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        longRegisters();
+        //longRegisters();
+        //testAdd();
+        testExtra();
     }
 
     public static void longRegisters() {
@@ -83,6 +88,32 @@ public class ExperimentArithmetic {
         //l = 0xFFFF0000 & l;
         //System.out.println("Filter:"+l);
 
+    }
+
+    private static void testAdd() {
+        String opName = "addck";
+        String[] regs = {"r3", "r1", "r2"};
+        Integer imm = null;
+
+        TraceData data = new SimpleTraceData(opName, regs, imm);
+
+        MbAdd add = new MbAdd(data);
+
+        System.out.println(add.toString());
+    }
+
+    /**
+     * Tests for class Extra
+     */
+    private static void testExtra() {
+
+        int rA = 1;
+        int rB = -1;
+        int carry = 0;
+
+        int carryOut = Extra.getCarryOut(rA, rB, carry);
+
+        System.out.println("CarryOut:"+carryOut);
     }
 
 }

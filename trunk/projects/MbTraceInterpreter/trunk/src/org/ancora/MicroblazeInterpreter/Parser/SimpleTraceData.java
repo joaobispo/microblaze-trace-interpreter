@@ -24,7 +24,7 @@ package org.ancora.MicroblazeInterpreter.Parser;
  */
 public class SimpleTraceData implements TraceData{
 
-    public SimpleTraceData(String opName, String[] registers, Short imm) {
+    public SimpleTraceData(String opName, String[] registers, Integer imm) {
         this.opName = opName;
         this.registers = registers;
         this.imm = imm;
@@ -47,7 +47,7 @@ public class SimpleTraceData implements TraceData{
       return registers[RB_INDEX];
    }
 
-   public Short getImm() {
+   public Integer getImm() {
       return imm;
    }
 
@@ -99,6 +99,6 @@ public class SimpleTraceData implements TraceData{
     // State
    private final String opName;
    private final String[] registers;
-   private final Short imm;
+   private final Integer imm;
 
 }
