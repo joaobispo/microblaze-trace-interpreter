@@ -89,7 +89,7 @@ public class MbAdd implements MbInstruction {
 
         // If kBit, calculate carry out
         if(!kBit) {
-            int carryOut = Extra.getCarryOut(rA, rB, carry);
+            int carryOut = InstructionCommons.getCarryOut(rA, rB, carry);
             // SPR <- CarryOut
         }
 

@@ -103,7 +103,7 @@ public class ExperimentArithmetic {
     }
 
     /**
-     * Tests for class Extra
+     * Tests for class InstructionCommons
      */
     private static void testExtra() {
 
@@ -111,7 +111,7 @@ public class ExperimentArithmetic {
         int rB = -1;
         int carry = 0;
 
-        int carryOut = Extra.getCarryOut(rA, rB, carry);
+        int carryOut = InstructionCommons.getCarryOut(rA, rB, carry);
 
         System.out.println("CarryOut:"+carryOut);
     }
