@@ -15,8 +15,9 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.Instructions;
+package org.ancora.MicroblazeInterpreter.Commons;
 
+import org.ancora.MicroblazeInterpreter.Instructions.*;
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.MicroblazeInterpreter.Parser.SimpleTraceData;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
