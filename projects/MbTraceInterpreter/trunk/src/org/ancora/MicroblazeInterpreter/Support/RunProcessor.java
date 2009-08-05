@@ -21,8 +21,12 @@ import java.io.File;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.TraceMemory;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters.SpecialPurposeRegisters;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters.SprMap;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MbProcessor;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFileArray;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialRegister;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SprMap;
 import org.ancora.jCommons.Disk;
 
 /**
@@ -50,6 +54,11 @@ public class RunProcessor {
       MicroBlazeProcessor mb = loadMicroBlaze(traceFile);
       // Execute it
       mb.run();
+
+      // Inspect it after execution
+      showSpr(mb);
+      showRegs(mb);
+
     }
 
     /**
@@ -78,14 +87,48 @@ public class RunProcessor {
       // Instruction Memory
       InstructionMemory memory = new TraceMemory(traceFile);
       SpecialPurposeRegisters specialRegisters = new SprMap();
+      RegisterFile registerFile = new RegisterFileArray();
 
-      MicroBlazeProcessor mb = new MicroBlazeProcessor(
+      MicroBlazeProcessor mb = new MbProcessor(
               memory,
-              specialRegisters);
+              specialRegisters,
+              registerFile);
 
       return mb;
    }
+
+    /**
+     * Show the contents of Special Purpose Registers
+     *
+     * @param mb
+     */
+    private static void showSpr(MicroBlazeProcessor mb) {
+        SpecialPurposeRegisters spr = mb.getSpecialRegisters();
+        System.out.println("Special Register Values:");
+        for (SpecialRegister reg : SpecialRegister.values()) {
+            int value = spr.read(reg);
+            System.out.println(reg.name() + ":" + value);
+        }
+    }
+
+    /**
+     * Show the contents of Genereal Purpose Register File.
+     *
+     * @param mb
+     */
+    private static void showRegs(MicroBlazeProcessor mb) {
+        RegisterFile regs = mb.getRegisterFile();
+        System.out.println("General Purpose Registers Values:");
+        for(int i=0; i<regs.numRegisters(); i++) {
+            System.out.println("[" + i + "]:" + regs.read(i));
+        }
+    }
+
    // INSTANCE VARIABLES
    private static final int INDEX_TRACE_FILE = 0;
+
+
+
+
 
 }

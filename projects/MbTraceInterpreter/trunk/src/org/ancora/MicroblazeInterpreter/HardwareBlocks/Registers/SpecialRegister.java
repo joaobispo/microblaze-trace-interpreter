@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters;
+package org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers;
 
 /**
  * Represents the special purpose registers of the MicroBlaze processor.

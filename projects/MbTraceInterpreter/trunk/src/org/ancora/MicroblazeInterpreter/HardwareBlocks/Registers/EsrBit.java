@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters;
+package org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers;
 
 import static org.ancora.MicroblazeInterpreter.Configuration.Definitions.MAX_BITS;
 

@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters;
+package org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers;
 
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.*;
 import java.util.HashMap;

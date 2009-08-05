@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters;
+package org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers;
 
 /**
  * MicroBlaze's Special Purpose Registers

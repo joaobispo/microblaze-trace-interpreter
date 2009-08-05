@@ -32,7 +32,10 @@ import org.ancora.MicroblazeInterpreter.Parser.TraceData;
  */
 public enum InstructionBuilder implements MbBuilder {
 
-   addi(new MbAdd());
+   add(new MbAdd()),
+   addc(new MbAdd()),
+   addk(new MbAdd()),
+   addkc(new MbAdd());
 
    /**
     * Constructor
