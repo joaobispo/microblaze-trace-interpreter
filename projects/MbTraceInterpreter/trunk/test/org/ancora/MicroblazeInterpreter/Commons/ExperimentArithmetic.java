@@ -34,7 +34,8 @@ public class ExperimentArithmetic {
     public static void main(String[] args) {
         //longRegisters();
         //testAdd();
-        testExtra();
+        //testExtra();
+        testWriteBits();
     }
 
     public static void longRegisters() {
@@ -99,7 +100,7 @@ public class ExperimentArithmetic {
 
         TraceData data = new SimpleTraceData(opName, regs, imm);
 
-        MbAdd add = new MbAdd(data);
+        MbAdd add = new MbAdd(data, null);
 
         System.out.println(add.toString());
     }
@@ -116,6 +117,21 @@ public class ExperimentArithmetic {
         int carryOut = BitOperations.getCarryOut(rA, rB, carry);
 
         System.out.println("CarryOut:"+carryOut);
+    }
+
+    private static void testWriteBits() {
+        int position, size, value, target;
+
+        // Target Initial: 1100
+        // Value with position: 0010
+        // Target Final: 1010
+
+        position = 1;
+        size = 2;
+        value = 1;
+        target = 12;
+        
+        BitOperations.writeBits(position, size, value, target);
     }
 
 }

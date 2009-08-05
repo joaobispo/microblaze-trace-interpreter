@@ -140,7 +140,8 @@ public class BitOperations {
    }
 
    /**
-    * Writes a set of bits to an intenger.
+    * Writes a set of bits to an intenger. 
+    * Only works for sizes between 1 and 31.
     *
     * @param position the least significat bit that will be written
     * @param size how many bits of the value, from the least significant bit,
@@ -150,11 +151,41 @@ public class BitOperations {
     * @return the updated value of the integer
     */
    public static int writeBits(int position, int size, int value, int target) {
-      for(int i=0; i<size; i++) {
+       //System.out.println("Target Before:"+Integer.toBinaryString(target));
+       //System.out.println("Value Before:"+Integer.toBinaryString(value));
+       int clearMask;
+
+       // Create the clear mask
+       clearMask = 1 << size;
+       clearMask -= 1;
+       // Move to the adequate position
+       clearMask = clearMask << position;
+       // Invert (positions with bit 0 will be cleared)
+       clearMask = ~clearMask;
+       
+       // Clear the space to be written
+       target = target & clearMask;
+
+       // Shift the value to the right position
+       value = value << position;
+       // Invert the mask and get the bits to set from value
+       value = value & ~clearMask;
+
+       // Merge value and target
+       target = target | value;
+       
+       //System.out.println("Clear Mask:"+Integer.toBinaryString(clearMask));
+
+       //System.out.println("Target After:"+Integer.toBinaryString(target));
+       //System.out.println("Value After:"+Integer.toBinaryString(value));
+
+       /*
+       for(int i=0; i<size; i++) {
          // Get bit to write
          int bitToWrite = getBit(i, value);
          target = writeBit(i+position, bitToWrite, target);
       }
+        */
 
       return target;
    }

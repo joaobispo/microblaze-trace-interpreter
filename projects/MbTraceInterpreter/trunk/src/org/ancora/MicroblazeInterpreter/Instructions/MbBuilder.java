@@ -21,11 +21,18 @@ import org.ancora.MicroblazeInterpreter.HardwareBlocks.MicroBlazeProcessor;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 
 /**
- * Interface for Builders of Instructions
+ * Interface for Builders of Instructions.
  *
  * @author Joao Bispo
  */
 public interface MbBuilder {
 
+   /**
+    * Builds a MicroBlaze instruction, ready to execute.
+    *
+    * @param data Data parsed from a trace instruction
+    * @param processor a MicroBlaze Processor
+    * @return MicroBlaze instruction ready to execute
+    */
    public MbInstruction build(TraceData data, MicroBlazeProcessor processor);
 }

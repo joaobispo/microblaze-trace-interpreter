@@ -18,25 +18,35 @@
 package org.ancora.MicroblazeInterpreter.Instructions;
 
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.MicroBlazeProcessor;
-import org.ancora.MicroblazeInterpreter.Instructions.MbBuilder;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 
 /**
- * Supported instructions by this interpreter
+ * Contaisn the instructions supported by this interpreter.
+ *
+ * <p>To add a new instruction, after creating a class which implements the
+ * MbInstruction and the MbBuilder interface, add a new enum which initializes
+ * with a default constructor of that class.
+ * 
  * 
  * @author Joao Bispo
  */
-public enum InstructionBuilder {
+public enum InstructionBuilder implements MbBuilder {
 
-   addi(new MbAddBuilder());
+   addi(new MbAdd());
 
+   /**
+    * Constructor
+    *
+    * @param builder
+    */
    private InstructionBuilder(MbBuilder builder) {
       this.builder = builder;
    }
 
 
+
    public MbInstruction build(TraceData data, MicroBlazeProcessor processor) {
-      return null;
+      return builder.build(data, processor);
    }
 
    // INSTANCE VARIABLES

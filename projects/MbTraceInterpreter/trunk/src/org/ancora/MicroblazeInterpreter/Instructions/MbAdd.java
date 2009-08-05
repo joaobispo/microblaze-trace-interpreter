@@ -18,7 +18,10 @@
 package org.ancora.MicroblazeInterpreter.Instructions;
 
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.MicroBlazeProcessor;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
+import org.ancora.jCommons.Console;
+import org.ancora.jCommons.DefaultConsole;
 
 /**
  *  Implements the MicroBlaze Arithmetic Add.
@@ -27,9 +30,33 @@ import org.ancora.MicroblazeInterpreter.Parser.TraceData;
  *
  * @author Joao Bispo
  */
-public class MbAdd implements MbInstruction {
+public class MbAdd implements MbInstruction, MbBuilder {
 
-    public MbAdd(TraceData data) {
+    /**
+     * Constructor for using this object as a MbBuilder
+     */
+    public MbAdd() {
+        cBit = false;
+        kBit = false;
+        regA = -1;
+        regB = -1;
+        regD = -1;
+        execute = false;
+    }
+
+    public MbInstruction build(TraceData data, MicroBlazeProcessor processor) {
+        return new MbAdd(data, processor);
+    }
+
+    /**
+     * Constructor for using this object as a MbInstruction
+     *
+     * @param data
+     */
+    public MbAdd(TraceData data, MicroBlazeProcessor processor) {
+        // Signal this object as "executable"
+        execute = true;
+
         // Parse the data
         String regNumber;
         final String opName = data.getOpName();
@@ -72,6 +99,12 @@ public class MbAdd implements MbInstruction {
      * Executes the instruction
      */
     public void execute() {
+        if(!execute) {
+            console.warn("execute: this object is a builder, not an instruction" +
+                    " ("+this.getClass()+")");
+            return;
+        }
+
         // If cBit, get carry from special register file
         int carry = 0;
         if(cBit) {
@@ -128,6 +161,7 @@ public class MbAdd implements MbInstruction {
     private final int regA;
     private final int regB;
     private final int regD;
+    private final boolean execute;
 
     // Hardware Blocks
     // Register file
@@ -139,6 +173,11 @@ public class MbAdd implements MbInstruction {
     private final int BEGIN_INDEX_REG = 1;
     private final int LATENCY = 1;
     private final boolean IS_BRANCH = false;
+
+    // Utilities
+    private final Console console = DefaultConsole.getConsole();
+
+
 
 
 }
