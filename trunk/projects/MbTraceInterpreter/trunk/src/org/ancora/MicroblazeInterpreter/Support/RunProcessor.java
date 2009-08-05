@@ -18,7 +18,12 @@
 package org.ancora.MicroblazeInterpreter.Support;
 
 import java.io.File;
+import java.util.Arrays;
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.Bucket;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedDataMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataBucket;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.TraceMemory;
@@ -99,11 +104,19 @@ public class RunProcessor {
       // Prepare Memory
 
       // Write register 2
-      registerFile.write(2, 100);
+      //registerFile.write(2, 100);
       // Write register 3
       //registerFile.write(3, 200);
       // Write Carry Bit
       //specialRegisters.writeCarryBit(1);
+
+      DataMemory mem = new CachedDataMemory(4);
+      mem.write(0, 100);
+      mem.write(1, 200);
+      // System.out.println(mem.read(0));
+      mem.write(1024*1024, 1000);
+
+       System.out.println("Memory:"+Arrays.toString(mem.getWrittenAddresses()));
 
       // Initialize Processor
       MicroBlazeProcessor mb = new MbProcessor(
