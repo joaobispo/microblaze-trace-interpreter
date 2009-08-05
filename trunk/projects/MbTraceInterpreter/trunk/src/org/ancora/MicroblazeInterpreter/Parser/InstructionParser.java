@@ -17,6 +17,9 @@
 
 package org.ancora.MicroblazeInterpreter.Parser;
 
+import org.ancora.jCommons.Console;
+import org.ancora.jCommons.DefaultConsole;
+
 
 /**
  * From a String with a MibroBlaze trace instruction, it can do two things:
@@ -151,8 +154,32 @@ public class InstructionParser {
       return imm;   
    }
 
+    /**
+     * Parses a string with a general purpose register. The string should
+     * be in the format "r<number>".
+     *
+     * @param register
+     * @return
+     */
+    public static int parseRegister(String register) {
+        String tempRegister = register.substring(BEGIN_INDEX_REG);
+
+        int returnReg = 0;
+
+        try {
+            returnReg = Integer.parseInt(tempRegister);
+        } catch (NumberFormatException ex) {
+            console.warn("parseRegister: Could not parse the register ("+
+                    register+"). Returning 0.");
+        }
+
+        return returnReg;
+    }
+
     //INSTANCE VARIABLES
 
     // Definitions
     private static final char COMMA = ',';
+    private static final int BEGIN_INDEX_REG = 1;
+    private static final Console console = DefaultConsole.getConsole();
 }

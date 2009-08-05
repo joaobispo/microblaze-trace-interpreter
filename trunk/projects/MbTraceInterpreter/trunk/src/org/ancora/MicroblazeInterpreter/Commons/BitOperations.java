@@ -190,9 +190,62 @@ public class BitOperations {
       return target;
    }
 
+   /**
+    * Pads the string with zeros on the left until it has the requested size.
+    *
+    * @param binaryNumber
+    * @param size
+    * @return
+    */
+   public static String padBinaryString(String binaryNumber, int size) {
+       int stringSize = binaryNumber.length();
+       if(stringSize >= size) {
+           return binaryNumber;
+       }
+
+       int numZeros = size - stringSize;
+       StringBuilder builder = new StringBuilder(numZeros);
+       for(int i=0; i<numZeros; i++) {
+           builder.append(ZERO);
+       }
+
+       return builder.toString() + binaryNumber;
+   }
+
+   /**
+    * Pads the string with 0x and zeros on the left until it has the
+    * requested size.
+    *
+    * @param hexNumber
+    * @param size
+    * @return
+    */
+   public static String padHexString(String hexNumber, int size) {
+       int stringSize = hexNumber.length();
+
+       if(stringSize >= size) {
+           return hexNumber;
+       }
+
+       int numZeros = size - stringSize;
+       StringBuilder builder = new StringBuilder(numZeros+HEX_PREFIX.length());
+       builder.append(HEX_PREFIX);
+       for(int i=0; i<numZeros; i++) {
+           builder.append(ZERO);
+       }
+
+       return builder.toString() + hexNumber;
+   }
+
+   // INSTANCE VARIABLES
+    // Definitions
     private static final long MASK_32_BITS = 0xFFFFFFFFL;
     private static final long MASK_BIT_33 = 0x100000000L;
     private static final int MASK_BIT_1 = 0x1;
+    private static final String ZERO = "0";
+    private static final String HEX_PREFIX = "0x";
+
+    // Utilities
     private static final Console console = DefaultConsole.getConsole();
 
 }

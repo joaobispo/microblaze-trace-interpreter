@@ -20,6 +20,7 @@ package org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.*;
 import java.util.HashMap;
 import java.util.Map;
+import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;
 
@@ -97,10 +98,29 @@ public class SprMap implements SpecialPurposeRegisters {
       registerFile.put(address, value);
    }
 
+   
+   public int getCarryBit() {
+        int msr = read(SpecialRegister.rmsr);
+        return BitOperations.getBit(MsrBit.C.getPosition(), msr);
+    }
+
+    public void writeCarryBit(int carryBit) {
+            int msr = read(SpecialRegister.rmsr);
+            msr = BitOperations.writeBit(MsrBit.C.getPosition(), carryBit, msr);
+            msr = BitOperations.writeBit(MsrBit.CC.getPosition(), carryBit, msr);
+            write(SpecialRegister.rmsr, msr);          
+    }
+
    //INSTANCE VARIABLES
    // State
    private final Map<Integer,Integer> registerFile;
 
+   // Caching
+   // Consider caching the PC and the MSR
+   //private int MSR;
+   //private int PC;
+
    // Utilities
    private final Console console = DefaultConsole.getConsole();
+
 }

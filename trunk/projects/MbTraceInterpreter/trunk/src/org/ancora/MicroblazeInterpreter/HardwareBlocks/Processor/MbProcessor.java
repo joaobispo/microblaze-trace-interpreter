@@ -21,9 +21,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 import org.ancora.MicroblazeInterpreter.Instructions.InstructionBuilder;
+import org.ancora.MicroblazeInterpreter.Instructions.MbInstruction;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 import org.ancora.MicroblazeInterpreter.Support.NumberCounter;
@@ -40,11 +42,15 @@ public class MbProcessor implements MicroBlazeProcessor {
     public MbProcessor(
             InstructionMemory instructionMemory,
             SpecialPurposeRegisters specialRegisters,
-            RegisterFile registerFile) {
+            RegisterFile registerFile,
+            LockRegister lockRegister,
+            Clock clock) {
 
         this.instructionMemory = instructionMemory;
         this.specialRegisters = specialRegisters;
         this.registerFile = registerFile;
+        this.lockRegister = lockRegister;
+        this.clock = clock;
 
 
         notImplemented = new HashSet<String>();
@@ -99,11 +105,14 @@ public class MbProcessor implements MicroBlazeProcessor {
         if (instBuilder == null) {
             return;
         }
-
+        // Build instruction
+        MbInstruction inst = instBuilder.build(data, this);
 
         // Executes Instructions
+        inst.execute();
 
         // Advances time: clock, program counter, etc...
+        clock.step(inst);
     }
 
     /**
@@ -158,16 +167,28 @@ public class MbProcessor implements MicroBlazeProcessor {
         return registerFile;
     }
 
+    public LockRegister getLockRegister() {
+        return lockRegister;
+    }
+
     // INSTANCE VARIABLES
     // State
     private final InstructionMemory instructionMemory;
     private final SpecialPurposeRegisters specialRegisters;
     private final RegisterFile registerFile;
+    private final LockRegister lockRegister;
+    private final Clock clock;
 
     // Debug
     private final Set<String> notImplemented;
     // Utilities
     private final Console console = DefaultConsole.getConsole();
+
+    public Clock getClock() {
+        return clock;
+    }
+
+
 
 
 

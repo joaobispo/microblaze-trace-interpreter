@@ -23,6 +23,7 @@ import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.MsrBit;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialRegister;
+import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;
@@ -68,7 +69,6 @@ public class MbAdd implements MbInstruction, MbBuilder {
         regs = processor.getRegisterFile();
 
         // Parse the data
-        String regNumber;
         final String opName = data.getOpName();
 
         // Check bitC
@@ -90,17 +90,13 @@ public class MbAdd implements MbInstruction, MbBuilder {
         }
 
         // Get rA
-        regNumber = data.getRa().substring(BEGIN_INDEX_REG);
-        regA = Integer.parseInt(regNumber);
+        regA = InstructionParser.parseRegister(data.getRa());
 
         // Get rB
-        regNumber = data.getRb().substring(BEGIN_INDEX_REG);
-        regB = Integer.parseInt(regNumber);
+        regB = InstructionParser.parseRegister(data.getRb());
 
         // Get rD
-        regNumber = data.getRd().substring(BEGIN_INDEX_REG);
-        regD = Integer.parseInt(regNumber);
-
+        regD = InstructionParser.parseRegister(data.getRd());
 
     }
 
@@ -120,8 +116,7 @@ public class MbAdd implements MbInstruction, MbBuilder {
         // If cBit, get carry from MSR of special register file
         int carry = 0;
         if(cBit) {
-            int msr = spr.read(SpecialRegister.rmsr);
-            carry = BitOperations.getBit(MsrBit.C.getPosition(), msr);
+            carry = spr.getCarryBit();
         }
 
         // Get rA and rB from register file
@@ -138,11 +133,7 @@ public class MbAdd implements MbInstruction, MbBuilder {
         if(!kBit) {
             // SPR <- CarryOut
             int carryOut = BitOperations.getCarryOut(rA, rB, carry);
-            int msr = spr.read(SpecialRegister.rmsr);
-            msr = BitOperations.writeBit(MsrBit.C.getPosition(), carryOut, msr);
-            msr = BitOperations.writeBit(MsrBit.CC.getPosition(), carryOut, msr);
-            spr.write(SpecialRegister.rmsr, msr);
-            
+            spr.writeCarryBit(carryOut);
         }
     }
 
@@ -187,14 +178,11 @@ public class MbAdd implements MbInstruction, MbBuilder {
     // Constants
     private final String C_CHAR = "c";
     private final String K_CHAR = "k";
-    private final int BEGIN_INDEX_REG = 1;
+    
     private final int LATENCY = 1;
     private final boolean IS_BRANCH = false;
 
     // Utilities
     private final Console console = DefaultConsole.getConsole();
-
-
-
 
 }

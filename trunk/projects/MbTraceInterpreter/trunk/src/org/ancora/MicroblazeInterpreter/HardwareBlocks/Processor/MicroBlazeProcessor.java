@@ -18,6 +18,7 @@
 package org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor;
 
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 
@@ -55,4 +56,17 @@ public interface MicroBlazeProcessor {
     */
    public RegisterFile getRegisterFile();
 
+   /**
+    * Access to the Lock Register
+    *
+    * @return
+    */
+   public LockRegister getLockRegister();
+
+   /**
+    * Access to the Clock
+    * 
+    * @return
+    */
+   public Clock getClock();
 }

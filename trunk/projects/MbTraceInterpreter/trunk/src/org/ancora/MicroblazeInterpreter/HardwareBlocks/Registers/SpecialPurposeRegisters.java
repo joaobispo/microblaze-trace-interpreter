@@ -60,4 +60,15 @@ public interface SpecialPurposeRegisters {
     * @param address the address of the register
     */
    public void write(int address, int value);
+
+   /**
+    * @return The carry bit from the Machine Status Register (MSR)
+    */
+   public int getCarryBit();
+
+   /**
+    * @param carryBit the new value of the bit of the
+    * Status Register (MSR)
+    */
+   public void writeCarryBit(int carryBit);
 }
