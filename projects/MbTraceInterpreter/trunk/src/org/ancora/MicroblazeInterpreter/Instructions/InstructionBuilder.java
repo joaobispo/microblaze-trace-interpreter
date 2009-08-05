@@ -35,7 +35,12 @@ public enum InstructionBuilder implements MbBuilder {
    add(new MbAdd()),
    addc(new MbAdd()),
    addk(new MbAdd()),
-   addkc(new MbAdd());
+   addkc(new MbAdd()),
+   addi(new MbAddi()),
+   addic(new MbAddi()),
+   addik(new MbAddi()),
+   addikc(new MbAddi()),
+   imm(new MbImm());
 
    /**
     * Constructor

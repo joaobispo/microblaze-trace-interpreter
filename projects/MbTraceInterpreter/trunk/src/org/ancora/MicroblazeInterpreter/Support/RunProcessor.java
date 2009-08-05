@@ -96,13 +96,16 @@ public class RunProcessor {
       LockRegister lockRegister = new LockRegister();
       Clock clock = new CycleClock(lockRegister, specialRegisters);
 
+      // Prepare Memory
+
       // Write register 2
       registerFile.write(2, 100);
       // Write register 3
-      registerFile.write(3, 200);
+      //registerFile.write(3, 200);
       // Write Carry Bit
-      specialRegisters.writeCarryBit(1);
+      //specialRegisters.writeCarryBit(1);
 
+      // Initialize Processor
       MicroBlazeProcessor mb = new MbProcessor(
               memory,
               specialRegisters,
