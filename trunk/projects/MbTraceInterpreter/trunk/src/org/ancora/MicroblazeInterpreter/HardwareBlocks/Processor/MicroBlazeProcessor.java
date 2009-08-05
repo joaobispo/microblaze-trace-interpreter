@@ -15,12 +15,14 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.HardwareBlocks;
+package org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters.SpecialPurposeRegisters;
 import org.ancora.MicroblazeInterpreter.Instructions.InstructionBuilder;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
@@ -35,8 +37,12 @@ import org.ancora.jCommons.DefaultConsole;
  */
 public class MicroBlazeProcessor {
 
-   public MicroBlazeProcessor(TraceMemory instructionMemory) {
+   public MicroBlazeProcessor(
+           InstructionMemory instructionMemory,
+           SpecialPurposeRegisters specialRegisters) {
+
       this.instructionMemory = instructionMemory;
+      this.specialRegisters = specialRegisters;
 
       notImplemented = new HashSet<String>();
    }
@@ -139,7 +145,8 @@ public class MicroBlazeProcessor {
 
    // INSTANCE VARIABLES
    // State
-   private final TraceMemory instructionMemory;
+   private final InstructionMemory instructionMemory;
+   private final SpecialPurposeRegisters specialRegisters;
 
    // Debug
    private final Set<String> notImplemented;

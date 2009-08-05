@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.HardwareBlocks;
+package org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,7 +34,7 @@ import org.ancora.jCommons.DefaultConsole;
  *
  * @author Joao Bispo
  */
-public class TraceMemory {
+public class TraceMemory implements InstructionMemory {
 
     public TraceMemory(File mbTrace) {
         traceFile = mbTrace;

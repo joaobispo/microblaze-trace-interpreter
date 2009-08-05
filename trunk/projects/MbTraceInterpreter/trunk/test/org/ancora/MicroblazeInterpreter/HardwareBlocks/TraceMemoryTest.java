@@ -17,6 +17,7 @@
 
 package org.ancora.MicroblazeInterpreter.HardwareBlocks;
 
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.TraceMemory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
