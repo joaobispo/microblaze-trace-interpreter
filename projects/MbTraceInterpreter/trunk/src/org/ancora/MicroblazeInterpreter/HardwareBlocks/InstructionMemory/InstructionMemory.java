@@ -15,24 +15,18 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.Instructions;
-
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
-import org.ancora.MicroblazeInterpreter.Parser.TraceData;
+package org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory;
 
 /**
- * Interface for Builders of Instructions.
+ * Holds trace instructions for execution.
  *
- * @author Joao Bispo
+ * @author Joao
  */
-public interface MbBuilder {
+public interface InstructionMemory {
 
-   /**
-    * Builds a MicroBlaze instruction, ready to execute.
-    *
-    * @param data Data parsed from a trace instruction
-    * @param processor a MicroBlaze Processor
-    * @return MicroBlaze instruction ready to execute
-    */
-   public MbInstruction build(TraceData data, MicroBlazeProcessor processor);
+    /**
+     * @return The next instruction to execute, or null if there are no more
+     * instructions.
+     */
+    public String nextInstruction();
 }

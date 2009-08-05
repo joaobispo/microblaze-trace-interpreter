@@ -17,7 +17,7 @@
 
 package org.ancora.MicroblazeInterpreter.Support;
 
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.TraceMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.TraceMemory;
 import java.io.File;
 import org.ancora.jCommons.Disk;
 

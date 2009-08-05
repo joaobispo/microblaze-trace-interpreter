@@ -18,7 +18,7 @@
 package org.ancora.MicroblazeInterpreter.Instructions;
 
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.MicroBlazeProcessor;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;

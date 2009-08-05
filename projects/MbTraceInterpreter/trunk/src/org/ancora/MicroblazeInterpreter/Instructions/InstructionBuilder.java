@@ -17,7 +17,7 @@
 
 package org.ancora.MicroblazeInterpreter.Instructions;
 
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.MicroBlazeProcessor;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 
 /**

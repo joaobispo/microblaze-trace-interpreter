@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.TraceMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.TraceMemory;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 import org.ancora.jCommons.Disk;

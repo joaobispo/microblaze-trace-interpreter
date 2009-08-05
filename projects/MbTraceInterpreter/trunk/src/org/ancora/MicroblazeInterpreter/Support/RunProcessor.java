@@ -18,8 +18,11 @@
 package org.ancora.MicroblazeInterpreter.Support;
 
 import java.io.File;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.MicroBlazeProcessor;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.TraceMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.TraceMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters.SpecialPurposeRegisters;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters.SprMap;
 import org.ancora.jCommons.Disk;
 
 /**
@@ -73,9 +76,12 @@ public class RunProcessor {
     */
    private static MicroBlazeProcessor loadMicroBlaze(File traceFile) {
       // Instruction Memory
-      TraceMemory memory = new TraceMemory(traceFile);
+      InstructionMemory memory = new TraceMemory(traceFile);
+      SpecialPurposeRegisters specialRegisters = new SprMap();
 
-      MicroBlazeProcessor mb = new MicroBlazeProcessor(memory);
+      MicroBlazeProcessor mb = new MicroBlazeProcessor(
+              memory,
+              specialRegisters);
 
       return mb;
    }

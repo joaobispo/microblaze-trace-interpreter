@@ -15,33 +15,14 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.HardwareBlocks;
-
-import java.util.HashMap;
-import java.util.Map;
-import org.ancora.jCommons.Console;
-import org.ancora.jCommons.DefaultConsole;
+package org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters;
 
 /**
  * MicroBlaze's Special Purpose Registers
  *
- * @author Joao Bispo
+ * @author Joao
  */
-public class SpecialPurposeRegisters {
-
-   public SpecialPurposeRegisters() {
-      SpecialRegister[] registers = SpecialRegister.values();
-      // Capacity estimate
-      int numParameters = registers.length;
-      int capacity = ((numParameters * 5) / 4) + 1;
-
-       // Initialize table with configuration values
-      registerFile = new HashMap<Integer, Integer>(capacity);
-
-      for(SpecialRegister register : registers) {
-         registerFile.put(register.getAddress(), 0);
-      }
-   }
+public interface SpecialPurposeRegisters {
 
    /**
     * Reads the contents of a special purpose register.
@@ -49,9 +30,7 @@ public class SpecialPurposeRegisters {
     * @param address the address of the register
     * @return the contents of the register
     */
-   public int read(int address) {
-      return registerFile.get(address);
-   }
+   public int read(int address);
 
 
    /**
@@ -60,9 +39,7 @@ public class SpecialPurposeRegisters {
     * @param register the register to read from
     * @return the contents of the register
     */
-   public int read(SpecialRegister register) {
-      return read(register.getAddress());
-   }
+   public int read(SpecialRegister register);
 
 
    /**
@@ -72,9 +49,7 @@ public class SpecialPurposeRegisters {
     * @param register the register to write to
     * @param value the value to be written
     */
-   public void write(SpecialRegister register, int value) {
-      write(register.getAddress(), value);
-   }
+   public void write(SpecialRegister register, int value);
 
    /**
     * Writes the contents of a special purpose register. If can only write to
@@ -84,22 +59,5 @@ public class SpecialPurposeRegisters {
     * @param value the value to be written
     * @param address the address of the register
     */
-   public void write(int address, int value) {
-      boolean containsKey = registerFile.containsKey(address);
-
-      if(!containsKey) {
-         console.warn("write: Trying to write to address of Special Register " +
-                 "that doesn't exist ("+address+")");
-         return;
-      }
-
-      registerFile.put(address, value);
-   }
-
-   //INSTANCE VARIABLES
-   // State
-   private final Map<Integer,Integer> registerFile;
-
-   // Utilities
-   private final Console console = DefaultConsole.getConsole();
+   public void write(int address, int value);
 }
