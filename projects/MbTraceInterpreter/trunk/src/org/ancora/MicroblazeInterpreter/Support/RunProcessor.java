@@ -18,10 +18,14 @@
 package org.ancora.MicroblazeInterpreter.Support;
 
 import java.io.File;
+import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.TraceMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.Clock;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.CycleClock;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MbProcessor;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFileArray;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
@@ -58,6 +62,7 @@ public class RunProcessor {
       // Inspect it after execution
       showSpr(mb);
       showRegs(mb);
+      showClock(mb);
 
     }
 
@@ -88,11 +93,22 @@ public class RunProcessor {
       InstructionMemory memory = new TraceMemory(traceFile);
       SpecialPurposeRegisters specialRegisters = new SprMap();
       RegisterFile registerFile = new RegisterFileArray();
+      LockRegister lockRegister = new LockRegister();
+      Clock clock = new CycleClock(lockRegister, specialRegisters);
+
+      // Write register 2
+      registerFile.write(2, 100);
+      // Write register 3
+      registerFile.write(3, 200);
+      // Write Carry Bit
+      specialRegisters.writeCarryBit(1);
 
       MicroBlazeProcessor mb = new MbProcessor(
               memory,
               specialRegisters,
-              registerFile);
+              registerFile,
+              lockRegister,
+              clock);
 
       return mb;
    }
@@ -107,7 +123,29 @@ public class RunProcessor {
         System.out.println("Special Register Values:");
         for (SpecialRegister reg : SpecialRegister.values()) {
             int value = spr.read(reg);
-            System.out.println(reg.name() + ":" + value);
+            String stringValue;
+            switch(reg) {
+                case rmsr:
+                    stringValue = Integer.toBinaryString(value);
+                    stringValue = BitOperations.padBinaryString(stringValue, 32);
+                    System.out.println(reg.name() + ":" + stringValue);
+                    break;
+                case resr:
+                    stringValue = Integer.toBinaryString(value);
+                    stringValue = BitOperations.padBinaryString(stringValue, 32);
+                    System.out.println(reg.name() + ":" + stringValue);
+                    break;
+                case rpc:
+                    stringValue = Integer.toHexString(value);
+                    stringValue = BitOperations.padHexString(stringValue, 8);
+                    System.out.println(reg.name() + ":" + stringValue);
+                    break;
+                default:
+                    System.out.println(reg.name() + ":" + value);
+                    break;
+
+            }
+            
         }
     }
 
@@ -124,8 +162,20 @@ public class RunProcessor {
         }
     }
 
+    /**
+     *
+     * Show information about processor execution.
+     * @param mb
+     */
+    private static void showClock(MicroBlazeProcessor mb) {
+        Clock clock = mb.getClock();
+        System.out.println("Number o clock cycles:"+clock.getLatency());
+    }
+
    // INSTANCE VARIABLES
    private static final int INDEX_TRACE_FILE = 0;
+
+
 
 
 
