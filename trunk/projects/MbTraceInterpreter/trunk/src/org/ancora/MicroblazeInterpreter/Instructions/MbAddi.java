@@ -60,7 +60,8 @@ public class MbAddi implements MbInstruction, MbBuilder {
     /**
      * Constructor for using this object as a MbInstruction
      *
-     * @param data
+     * @param data parsed trace data
+     * @param processor a MicroBlaze processor
      */
     public MbAddi(TraceData data, MicroBlazeProcessor processor) {
         // Signal this object as "executable"
@@ -119,8 +120,7 @@ public class MbAddi implements MbInstruction, MbBuilder {
         // If cBit, get carry from MSR of special register file
         int carry = 0;
         if(cBit) {
-            int msr = spr.read(SpecialRegister.rmsr);
-            carry = BitOperations.getBit(MsrBit.C.getPosition(), msr);
+            carry = spr.getCarryBit();
         }
 
         // Get rA from register file
@@ -149,11 +149,7 @@ public class MbAddi implements MbInstruction, MbBuilder {
         if(!kBit) {
             // SPR <- CarryOut
             int carryOut = BitOperations.getCarryOut(rA, immediate, carry);
-            int msr = spr.read(SpecialRegister.rmsr);
-            msr = BitOperations.writeBit(MsrBit.C.getPosition(), carryOut, msr);
-            msr = BitOperations.writeBit(MsrBit.CC.getPosition(), carryOut, msr);
-            spr.write(SpecialRegister.rmsr, msr);
-            
+            spr.writeCarryBit(carryOut);
         }
     }
 
