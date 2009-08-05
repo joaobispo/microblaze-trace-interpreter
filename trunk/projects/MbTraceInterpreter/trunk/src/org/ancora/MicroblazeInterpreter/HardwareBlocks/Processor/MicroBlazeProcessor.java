@@ -17,146 +17,42 @@
 
 package org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.SpecialRegisters.SpecialPurposeRegisters;
-import org.ancora.MicroblazeInterpreter.Instructions.InstructionBuilder;
-import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
-import org.ancora.MicroblazeInterpreter.Parser.TraceData;
-import org.ancora.MicroblazeInterpreter.Support.NumberCounter;
-import org.ancora.jCommons.Console;
-import org.ancora.jCommons.DefaultConsole;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 
 /**
- * Represents a MicroBlaze Processor. Runs trace files.
+ * Represents a MicroBlaze Processor which runs trace files.
  *
  * @author Joao Bispo
  */
-public class MicroBlazeProcessor {
+public interface MicroBlazeProcessor {
 
-   public MicroBlazeProcessor(
-           InstructionMemory instructionMemory,
-           SpecialPurposeRegisters specialRegisters) {
-
-      this.instructionMemory = instructionMemory;
-      this.specialRegisters = specialRegisters;
-
-      notImplemented = new HashSet<String>();
-   }
-
-   public void run() {
-      // Fetch instruction
-      String instruction = instructionMemory.nextInstruction();
-      // Initialize address counter
-      NumberCounter counter = new NumberCounter();
-
-      // Run Trace File
-      while(instruction != null) {
-          // Process instruction
-          processInstruction(instruction, counter);
-        
-         // Fetch next instruction
-         instruction = instructionMemory.nextInstruction();
-      }
-
-      // Show how many not implemented operations where found
-      int notImplementedNumber = notImplemented.size();
-      if(notImplementedNumber > 0) {
-          console.warn(notImplementedNumber+" instructions not implemented.");
-      }
-
-      // Show contents of counter
-      showCounter(counter);
-     
-
-   }
-
+   
     /**
-     * Processes the given instruction.
-     *
-     * @param instruction
+     * Runs the trace.
      */
-    private void processInstruction(String instruction, NumberCounter counter) {
-        // Check instruction address
-        String stringAddress = InstructionParser.getMemoryAddress(instruction);
-        int decodedAddress = Integer.valueOf(stringAddress, 16);
-        counter.addInt(decodedAddress);
-
-        // Check if instruction is in cache
-
-        // If instruction is not in cache, create it an add to cache
-
-        TraceData data = InstructionParser.parseInstruction(instruction);
-        String opName = data.getOpName();
-        InstructionBuilder instBuilder = getInstruction(opName);
-        // Check if instruction could be built
-        if(instBuilder == null) {
-            return;
-        }
-
-
-        // Executes Instructions
-
-        // Advances time: clock, program counter, etc...
-    }
+   public void run();
 
    /**
-    * Returns the InstructionBuilder that corresponds to the given name.
+    * Access to the Instruction Memory.
     *
-    * @param opName
     * @return
     */
-    private InstructionBuilder getInstruction(String opName) {
-        InstructionBuilder instBuilder = null;
+   public InstructionMemory getInstructionMemory();
 
-        try {
-            instBuilder = InstructionBuilder.valueOf(opName);
-        } catch (IllegalArgumentException ex) {
-            if (!notImplemented.contains(opName)) {
-                console.warn("getInstruction: Asked for a MicroBlaze Instruction " +
-                        "which is not implemented (" + opName + ")");
-                notImplemented.add(opName);
-            }
-        }
-        return instBuilder;
-    }
-
-       /**
-    * Show contents of address counter.
-    *
-    * @param counter
+   /**
+    * Access to the Special Purpose Registers.
+    * 
+    * @return
     */
-    private void showCounter(NumberCounter counter) {
-         Map<Integer, Integer> map = counter.getTable();
-      System.out.println("Number of addresses:"+map.size());
+   public SpecialPurposeRegisters getSpecialRegisters();
 
-      // Get keyset and sort it
-      Set<Integer> keys = map.keySet();
-      Integer[] keysArray = keys.toArray(new Integer[keys.size()]);
-      Arrays.sort(keysArray);
-
-      for(Integer key : keysArray) {
-         System.out.println("Address:"+key+";Count:"+map.get(key));
-      }
-    }
-
-   // INSTANCE VARIABLES
-   // State
-   private final InstructionMemory instructionMemory;
-   private final SpecialPurposeRegisters specialRegisters;
-
-   // Debug
-   private final Set<String> notImplemented;
-
-   // Utilities
-   private final Console console = DefaultConsole.getConsole();
-
-
-
-
-
+   /**
+    * Access to the General Purpose Register File.
+    *
+    * @return
+    */
+   public RegisterFile getRegisterFile();
 
 }

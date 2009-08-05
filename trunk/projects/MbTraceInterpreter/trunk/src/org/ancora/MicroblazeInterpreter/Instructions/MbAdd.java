@@ -19,6 +19,10 @@ package org.ancora.MicroblazeInterpreter.Instructions;
 
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.MsrBit;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialRegister;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;
@@ -42,6 +46,8 @@ public class MbAdd implements MbInstruction, MbBuilder {
         regB = -1;
         regD = -1;
         execute = false;
+        spr = null;
+        regs = null;
     }
 
     public MbInstruction build(TraceData data, MicroBlazeProcessor processor) {
@@ -56,6 +62,10 @@ public class MbAdd implements MbInstruction, MbBuilder {
     public MbAdd(TraceData data, MicroBlazeProcessor processor) {
         // Signal this object as "executable"
         execute = true;
+
+        // Assign Hardware Blocks
+        spr = processor.getSpecialRegisters();
+        regs = processor.getRegisterFile();
 
         // Parse the data
         String regNumber;
@@ -105,30 +115,35 @@ public class MbAdd implements MbInstruction, MbBuilder {
             return;
         }
 
-        // If cBit, get carry from special register file
+
+
+        // If cBit, get carry from MSR of special register file
         int carry = 0;
         if(cBit) {
-            //carry <- SPR
+            int msr = spr.read(SpecialRegister.rmsr);
+            carry = BitOperations.getBit(MsrBit.C.getPosition(), msr);
         }
 
         // Get rA and rB from register file
-        int rA = 0; // rA <- RF
-        int rB = 0; // rB <- RF
+        int rA = regs.read(regA); // rA <- RF
+        int rB = regs.read(regB); // rB <- RF
 
         // Do summation
         int rD = rA + rB + carry;
 
         // Store result in register file
-        // RD <- rD
+        regs.write(regD, rD);// RD <- rD
 
         // If kBit, calculate carry out
         if(!kBit) {
-            int carryOut = BitOperations.getCarryOut(rA, rB, carry);
             // SPR <- CarryOut
+            int carryOut = BitOperations.getCarryOut(rA, rB, carry);
+            int msr = spr.read(SpecialRegister.rmsr);
+            msr = BitOperations.writeBit(MsrBit.C.getPosition(), carryOut, msr);
+            msr = BitOperations.writeBit(MsrBit.CC.getPosition(), carryOut, msr);
+            spr.write(SpecialRegister.rmsr, msr);
+            
         }
-
-        // Advance CycleCount
-        // CycleCount.next(latency)
     }
 
    public int latency() {
@@ -166,6 +181,8 @@ public class MbAdd implements MbInstruction, MbBuilder {
     // Hardware Blocks
     // Register file
     // Special Registers
+    private final SpecialPurposeRegisters spr;
+    private final RegisterFile regs;
 
     // Constants
     private final String C_CHAR = "c";
