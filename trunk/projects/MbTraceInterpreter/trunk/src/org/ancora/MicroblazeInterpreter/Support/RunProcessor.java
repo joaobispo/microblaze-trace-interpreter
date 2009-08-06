@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.Bucket;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedDataMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedSegments;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataBucket;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.MemorySegment;
@@ -60,7 +61,8 @@ public class RunProcessor {
       System.out.println("Opening trace \""+traceFilepath+"\"...");
       File traceFile = disk.safeFile(traceFilepath);
 
-      testDataMemory();
+      //testDataMemory();
+      testCachedSegments();
       /*
       // Load the processor
       MicroBlazeProcessor mb = loadMicroBlaze(traceFile);
@@ -222,6 +224,19 @@ public class RunProcessor {
         seg.storeByte(1000, 2);
 
         System.out.println("Addresses:"+Arrays.toString(seg.writtenWordAddresses()));
+    }
+
+    private static void testCachedSegments() {
+        CachedSegments segs = new CachedSegments();
+
+        System.out.println(segs.getSegment(0));
+        System.out.println(segs.getSegment(4095));
+        System.out.println(segs.getSegment(4095));
+        System.out.println(segs.getSegment(4095));
+        System.out.println(segs.getSegment(4095));
+        System.out.println(segs.getSegment(4096));
+
+        System.out.println(segs.stats());
     }
 
 
