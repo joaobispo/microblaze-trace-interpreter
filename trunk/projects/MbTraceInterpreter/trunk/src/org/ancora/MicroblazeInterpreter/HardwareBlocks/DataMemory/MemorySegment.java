@@ -23,12 +23,17 @@ import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;
 
 /**
- * Segment of byte-address memory. Memory ranges from 0 to 2^sizePower - 1.
+ * Segment of byte-addressed memory. Memory ranges from 0 to 2^sizePower - 1.
  *
  * @author Joao Bispo
  */
 public class MemorySegment {
 
+    /**
+     * Creates a byte-addressed memory with 2^sizePower 32-bit words.
+     *
+     * @param sizePower
+     */
    public MemorySegment(int sizePower) {
         int totalSize = (int) Math.pow(BASE_2, sizePower);
 
@@ -54,7 +59,8 @@ public class MemorySegment {
         index = index >>> offset;
         
         // Transform to the index used to address the array
-        index = index >>> 2;
+        index = arrayIndex(index);
+        
 
         if(!isWritten.get(index)) {
             String hexAddress = Integer.toHexString(wordAddress);
@@ -72,20 +78,21 @@ public class MemorySegment {
 
    /**
     * Stores the contents of value, into the word aligned memory location
-    * indicated by wordAddress. If the address is bigger than the
-    * memory segment, the higher bits are ignored.
+    * indicated by wordAddress. The 2 least significant bits are ignored.
+    * If the address is bigger than the memory segment,
+    * the higher bits are ignored.
     *
     * @param wordAddress a byte-addressed, word-aligned memory location
     * @param value
     */
-   private void storeWord(int wordAddress, int value) {
+   public void storeWord(int wordAddress, int value) {
         // Truncate higher bits of index
         int offset = INT_SIZE - sizePower;
         int index = wordAddress << offset;
         index = index >>> offset;
 
         // Transform to the index used to address the array
-        index = index >>> 2;
+        index = arrayIndex(index);
 
         words[index] = value;
         isWritten.set(index);
@@ -94,44 +101,148 @@ public class MemorySegment {
 
    /**
     * Loads a halfword (16 bits) from the halfword aligned memory location
-    * indicated by halfwordAddress. The least significant bit are ignored.
-    * If the address is bigger than the memory segment,
-    * the higher bits are ignored.
+    * indicated by halfwordAddress. The least significant bit is ignored.
+    * If the address is bigger than the memory segment, the higher bits
+    * are ignored.
     *
     * <p>If position has not been written yet, a warning is shown.
     *
     * @param halfWord
     * @return
     */
-   private int loadHalfWord(int halfwordAddress) {
+   public int loadHalfword(int halfwordAddress) {
       // Read complete word
       int word = loadWord(halfwordAddress);
 
-      // Extract part of halfword
+      // Extract which halfword
       final int offset = (halfwordAddress >>> 1) & MASK_1_BIT;
+      // Put requested halfword at position 0
       int halfword = word >>> (offset * HALFWORD_SIZE);
 
       return halfword & MASK_16_BITS;
    }
 
-   private void storeHalfWord(int halfwordAddress, int value) {
+   /**
+    * Stores the contents of value, into the halfword aligned memory location
+    * indicated by halfwordAddress.
+    * The least significant bit is ignored.
+    * If the address is bigger than the memory segment, the higher bits
+    * are ignored.
+    *
+    * @param wordAddress a byte-addressed, word-aligned memory location
+    *
+    * @param halfwordAddress
+    * @param value
+    */
+   public void storeHalfword(int halfwordAddress, int value) {
+       int word = 0;
+       
+       // Check if word has been written
+       int index = arrayIndex(halfwordAddress);
+       if(isWritten.get(index)) {
+           // Read complete word
+           word = loadWord(halfwordAddress);
+       }
 
+       // Extract which halfword
+       final int offset = (halfwordAddress >>> 1) & MASK_1_BIT;
+       final int position = offset * HALFWORD_SIZE;
+
+       final int finalWord = BitOperations.writeBits(position, HALFWORD_SIZE, value, word);
+
+       // Store word
+       storeWord(halfwordAddress, finalWord);
+   }
+
+   /**
+    * Loads a byte (8 bits) from the byte aligned memory location
+    * indicated by halfwordAddress.
+    * If the address is bigger than the memory segment, the higher bits
+    * are ignored.
+    *
+    * <p>If position has not been written yet, a warning is shown.
+    *
+    * @param halfWord
+    * @return
+    */
+   public int loadByte(int byteAddress) {
+      // Read complete word
+      int word = loadWord(byteAddress);
+
+      // Extract which byte
+      final int offset = byteAddress & MASK_2_BITS;
+      // Put requested byte at position 0
+      int byt = word >>> (offset * BYTE_SIZE);
+
+      return byt & MASK_8_BITS;
+   }
+
+   /**
+    * Stores the contents of value, into the byte aligned memory location
+    * indicated by byteAddress.
+    * If the address is bigger than the memory segment, the higher bits
+    * are ignored.
+    *
+    * @param wordAddress a byte-addressed, word-aligned memory location
+    *
+    * @param halfwordAddress
+    * @param value
+    */
+   public void storeByte(int byteAddress, int value) {
+       int word = 0;
+
+       // Check if word has been written
+       int index = arrayIndex(byteAddress);
+       if(isWritten.get(index)) {
+           // Read complete word
+           word = loadWord(byteAddress);
+       }
+
+       // Extract which halfword
+       final int offset = byteAddress  & MASK_2_BITS;
+       final int position = offset * BYTE_SIZE;
+
+       final int finalWord = BitOperations.writeBits(position, BYTE_SIZE, value, word);
+
+       // Store word
+       storeWord(byteAddress, finalWord);
    }
 
    /**
     * @return an array with the word-aligned addresses which have been written.
     */
-   public int[] writtenAddresses() {
+   public int[] writtenWordAddresses() {
       int numWrittenWords = isWritten.cardinality();
       int[] writtenAddresses = new int[numWrittenWords];
 
       int index = 0;
       for (int i = isWritten.nextSetBit(0); i >= 0; i = isWritten.nextSetBit(i + 1)) {
-         writtenAddresses[index] = i;
+         writtenAddresses[index] = i<<2;
          index++;
       }
 
       return writtenAddresses;
+   }
+
+   /**
+    * Transforms word-aligned addresses in indexes for accessing the array.
+    * 
+    * @param wordAddress
+    * @return
+    */
+   private int arrayIndex(int wordAddress) {
+       return wordAddress >>> 2;
+   }
+
+   /**
+    * Transforms array indexes in word-aligned addresses for accessing the
+    * memory.
+    *
+    * @param arrayIndex
+    * @return
+    */
+   private int wordAddress(int arrayIndex) {
+       return arrayIndex << 2;
    }
 
     // INSTANCE VARIABLES
