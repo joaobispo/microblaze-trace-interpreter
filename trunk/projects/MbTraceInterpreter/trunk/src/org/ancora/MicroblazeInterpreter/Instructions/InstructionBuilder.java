@@ -42,7 +42,11 @@ public enum InstructionBuilder implements Builder {
    addikc(new MbAddi()),
    imm(new MbImm()),
    and(new MbAnd()),
-   andi(new MbAndi());
+   andi(new MbAndi()),
+   beqi(new MbBeqi()),
+   beqid(new MbBeqi()),
+   bgei(new MbBgei()),
+   bgeid(new MbBgei());
 
    /**
     * Constructor

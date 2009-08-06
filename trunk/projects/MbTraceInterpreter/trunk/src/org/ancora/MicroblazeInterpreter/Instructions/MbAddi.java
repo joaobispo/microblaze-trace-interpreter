@@ -20,19 +20,17 @@ package org.ancora.MicroblazeInterpreter.Instructions;
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.MsrBit;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialRegister;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;
 
 /**
- *  Implements the MicroBlaze Arithmetic Add.
+ *  Implements the MicroBlaze Arithmetic Add Immediate.
  * 
- * <p> Includes the instructions add, addc, addk and addkc.
+ * <p> Includes the instructions addi, addic, addik and addikc.
  *
  * @author Joao Bispo
  */

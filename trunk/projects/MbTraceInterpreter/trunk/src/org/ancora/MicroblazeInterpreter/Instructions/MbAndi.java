@@ -23,9 +23,9 @@ import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 
 /**
- *  Implements the MicroBlaze Arithmetic Add.
+ *  Implements the MicroBlaze Logical AND with Immediate.
  * 
- * <p> Includes the instructions add, addc, addk and addkc.
+ * <p> Includes the instruction andi.
  *
  * @author Joao Bispo
  */
