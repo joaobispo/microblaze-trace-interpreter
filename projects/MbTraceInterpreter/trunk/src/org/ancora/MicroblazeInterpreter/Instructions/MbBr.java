@@ -61,12 +61,6 @@ public class MbBr implements Instruction, Builder {
         //lockReg = processor.getLockRegister();
         spr = processor.getSpecialRegisters();
 
-        // Get rD
-        regD = InstructionParser.parseRegister(data.getR1());
-
-        // Get rB
-        regB = InstructionParser.parseRegister(data.getR2());
-
         // Check bitD
         final boolean hasD = data.getOpName().contains(D_CHAR);
         if (hasD) {
@@ -79,8 +73,15 @@ public class MbBr implements Instruction, Builder {
         final boolean hasL = data.getOpName().contains(L_CHAR);
         if (hasL) {
             lBit = true;
+            // Get rD
+            regD = InstructionParser.parseRegister(data.getR1());
+            // Get rB
+            regB = InstructionParser.parseRegister(data.getR2());
         } else {
             lBit = false;
+            // Get rB
+            regB = InstructionParser.parseRegister(data.getR1());
+            regD = -1;
         }
 
         // Check bitA
