@@ -24,6 +24,30 @@ package org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory;
  */
 public interface DataMemory {
 
+   /**
+    * Loads a word (32 bits) from the word aligned memory location indicated
+    * by wordAddress. The two least significant bits are ignored. If the address
+    * is bigger than the memory segment, the higher bits are ignored.
+    *
+    * <p>If position has not been written yet, a warning is shown.
+    *
+    * @param wordAddress a byte-addressed, word-aligned memory location
+    * @return
+    */
+    public int loadWord(int wordAddress);
+
+   /**
+    * Stores the contents of value, into the word aligned memory location
+    * indicated by wordAddress. The 2 least significant bits are ignored.
+    * If the address is bigger than the memory segment,
+    * the higher bits are ignored.
+    *
+    * @param wordAddress a byte-addressed, word-aligned memory location
+    * @param value
+    */
+   public void storeWord(int wordAddress, int value);
+
+
     /**
      * Reads a word from the memory. If position has not been written,
      * a warning is shown.
@@ -31,7 +55,7 @@ public interface DataMemory {
      * @param address
      * @return
      */
-    public int read(int address);
+    //public int read(int address);
 
     /**
      * Writes a word to the memory.
@@ -39,11 +63,19 @@ public interface DataMemory {
      * @param address
      * @param word
      */
-    public void write(int address, int word);
+    //public void write(int address, int word);
+
+   /**
+    * @return an array with the word-aligned addresses which have been written.
+    */
+    public int[] writtenWordAddresses();
 
     /**
+     * Checks if a specific word has been written.
      *
-     * @return the addresses that have been written.
+     * @param wordAddress
+     * @return
      */
-    public int[] getWrittenAddresses();
+    public boolean isWordWritten(int wordAddress);
+    
 }
