@@ -35,15 +35,15 @@ public class SimpleTraceData implements TraceData{
       return opName;
    }
 
-   public String getRd() {
+   public String getR1() {
       return registers[RD_INDEX];
    }
 
-   public String getRa() {
+   public String getR2() {
       return registers[RA_INDEX];
    }
 
-   public String getRb() {
+   public String getR3() {
       return registers[RB_INDEX];
    }
 

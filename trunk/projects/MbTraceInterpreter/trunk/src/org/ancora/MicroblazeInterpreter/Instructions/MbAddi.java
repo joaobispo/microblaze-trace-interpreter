@@ -92,13 +92,13 @@ public class MbAddi implements Instruction, Builder {
         }
 
         // Get rA
-        regA = InstructionParser.parseRegister(data.getRa());
+        regA = InstructionParser.parseRegister(data.getR2());
 
         // Get rB
         imm = data.getImm();
 
         // Get rD
-        regD = InstructionParser.parseRegister(data.getRd());
+        regD = InstructionParser.parseRegister(data.getR1());
 
     }
 

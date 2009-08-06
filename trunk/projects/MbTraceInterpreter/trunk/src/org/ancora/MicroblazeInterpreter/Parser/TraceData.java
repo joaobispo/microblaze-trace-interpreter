@@ -32,15 +32,15 @@ public interface TraceData {
    /**
     * @return the name of the destination register, or null if not defined
     */
-   public String getRd();
+   public String getR1();
    /**
     * @return the name of the first source register, or null if not defined
     */
-   public String getRa();
+   public String getR2();
    /**
     * @return the name of the second source register, or null if not defined
     */
-   public String getRb();
+   public String getR3();
    /**
     * @return the immediate value, or null if not defined
     */

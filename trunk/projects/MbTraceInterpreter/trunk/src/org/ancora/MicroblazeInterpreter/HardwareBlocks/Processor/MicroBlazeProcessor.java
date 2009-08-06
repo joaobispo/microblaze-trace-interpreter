@@ -17,6 +17,7 @@
 
 package org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor;
 
+import org.ancora.MicroblazeInterpreter.Configuration.MbConfiguration;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemoryPlus;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
@@ -77,4 +78,11 @@ public interface MicroBlazeProcessor {
     * @return
     */
    public DataMemoryPlus getDataMemory();
+
+   /**
+    * Access to MPD Parameters.
+    *
+    * @return
+    */
+   public MbConfiguration getConfiguration();
 }

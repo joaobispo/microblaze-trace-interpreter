@@ -20,6 +20,7 @@ package org.ancora.MicroblazeInterpreter.Support;
 import java.io.File;
 import java.util.Arrays;
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
+import org.ancora.MicroblazeInterpreter.Configuration.MbConfiguration;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedSegments;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemoryPlus;
@@ -106,6 +107,7 @@ public class RunProcessor {
       Clock clock = new CycleClock(lockRegister, specialRegisters);
       DataMemory dataMemory = new CachedSegments();
       DataMemoryPlus dataMemoryPlus = new DataMemoryPlus(dataMemory);
+      MbConfiguration configuration = new MbConfiguration();
       // Prepare Memory
 
       // Write register 2
@@ -130,7 +132,8 @@ public class RunProcessor {
               registerFile,
               lockRegister,
               clock,
-              dataMemoryPlus);
+              dataMemoryPlus,
+              configuration);
 
       return mb;
    }

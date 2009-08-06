@@ -55,13 +55,13 @@ public class MbAnd implements Instruction, Builder {
         regs = processor.getRegisterFile();
 
         // Get rA
-        regA = InstructionParser.parseRegister(data.getRa());
+        regA = InstructionParser.parseRegister(data.getR2());
 
         // Get rB
-        regB = InstructionParser.parseRegister(data.getRb());
+        regB = InstructionParser.parseRegister(data.getR3());
 
         // Get rD
-        regD = InstructionParser.parseRegister(data.getRd());
+        regD = InstructionParser.parseRegister(data.getR1());
 
     }
 
