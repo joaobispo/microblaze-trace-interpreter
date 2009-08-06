@@ -23,8 +23,6 @@ import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
-import org.ancora.jCommons.Console;
-import org.ancora.jCommons.DefaultConsole;
 
 /**
  *  Implements the MicroBlaze Arithmetic Add.
@@ -44,7 +42,6 @@ public class MbAdd implements Instruction, Builder {
         regA = -1;
         regB = -1;
         regD = -1;
-        execute = false;
         spr = null;
         regs = null;
     }
@@ -60,8 +57,6 @@ public class MbAdd implements Instruction, Builder {
      * @param processor a MicroBlaze processor
      */
     public MbAdd(TraceData data, MicroBlazeProcessor processor) {
-        // Signal this object as "executable"
-        execute = true;
 
         // Assign Hardware Blocks
         spr = processor.getSpecialRegisters();
@@ -104,13 +99,6 @@ public class MbAdd implements Instruction, Builder {
      * Executes the instruction
      */
     public void execute() {
-        if(!execute) {
-            console.warn("execute: this object is a builder, not an instruction" +
-                    " ("+this.getClass()+")");
-            return;
-        }
-
-
 
         // If cBit, get carry from MSR of special register file
         int carry = 0;
@@ -131,7 +119,7 @@ public class MbAdd implements Instruction, Builder {
         // If kBit, calculate carry out
         if(!kBit) {
             // SPR <- CarryOut
-            int carryOut = BitOperations.getCarryOut(rA, rB, carry);
+            int carryOut = BitOperations.getCarryOutAdd(rA, rB, carry);
             spr.writeCarryBit(carryOut);
         }
     }
@@ -144,6 +132,7 @@ public class MbAdd implements Instruction, Builder {
       return IS_BRANCH;
    }
 
+   /*
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(100);
@@ -156,6 +145,7 @@ public class MbAdd implements Instruction, Builder {
         
         return builder.toString();
     }
+    */
 
 
     // INSTANCE VARIABLES
@@ -166,7 +156,6 @@ public class MbAdd implements Instruction, Builder {
     private final int regA;
     private final int regB;
     private final int regD;
-    private final boolean execute;
 
     // Hardware Blocks
     // Register file
@@ -180,8 +169,5 @@ public class MbAdd implements Instruction, Builder {
     
     private final int LATENCY = 1;
     private final boolean IS_BRANCH = false;
-
-    // Utilities
-    private final Console console = DefaultConsole.getConsole();
 
 }

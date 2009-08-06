@@ -111,6 +111,26 @@ public class SprMap implements SpecialPurposeRegisters {
             write(SpecialRegister.rmsr, msr);          
     }
 
+    public void writeDzoBit(int dzo) {
+            int msr = read(SpecialRegister.rmsr);
+            msr = BitOperations.writeBit(MsrBit.DZO.getPosition(), dzo, msr);
+            write(SpecialRegister.rmsr, msr);
+    }
+
+
+    public void writeDecBit(int dec) {
+            int esr = read(SpecialRegister.resr);
+            esr = BitOperations.writeBit(EsrBit.DEC.getPosition(), dec, esr);
+            write(SpecialRegister.resr, esr);
+    }
+
+    public void writeEcBits(int ec) {
+            int esr = read(SpecialRegister.resr);
+            esr = BitOperations.writeBits(EsrBit.EC.getPosition(),
+                    EsrBit.EC.getSize(), ec, esr);
+            write(SpecialRegister.resr, esr);
+    }
+
     public int getPc() {
         return read(SpecialRegister.rpc);
     }
@@ -135,6 +155,9 @@ public class SprMap implements SpecialPurposeRegisters {
 
    // Utilities
    private final Console console = DefaultConsole.getConsole();
+
+
+
 
 
 

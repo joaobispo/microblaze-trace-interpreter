@@ -19,40 +19,35 @@ package org.ancora.MicroblazeInterpreter.Instructions;
 
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
-import org.ancora.jCommons.Console;
-import org.ancora.jCommons.DefaultConsole;
 
 /**
- *  Implements the MicroBlaze Arithmetic Add Immediate.
+ *  Implements the MicroBlaze Arithmetic Reverse Subtract.
  * 
- * <p> Includes the instructions addi, addic, addik and addikc.
+ * <p> Includes the instructions rsub, rsubc, rsubk and rsubkc.
  *
  * @author Joao Bispo
  */
-public class MbAddi implements Instruction, Builder {
+public class MbRsub implements Instruction, Builder {
 
     /**
      * Constructor for using this object as a MbBuilder
      */
-    public MbAddi() {
+    public MbRsub() {
         cBit = false;
         kBit = false;
         regA = -1;
-        imm = -1;
+        regB = -1;
         regD = -1;
-        execute = false;
         spr = null;
         regs = null;
-        lockReg = null;
     }
 
     public Instruction build(TraceData data, MicroBlazeProcessor processor) {
-        return new MbAddi(data, processor);
+        return new MbRsub(data, processor);
     }
 
     /**
@@ -61,14 +56,11 @@ public class MbAddi implements Instruction, Builder {
      * @param data parsed trace data
      * @param processor a MicroBlaze processor
      */
-    public MbAddi(TraceData data, MicroBlazeProcessor processor) {
-        // Signal this object as "executable"
-        execute = true;
+    public MbRsub(TraceData data, MicroBlazeProcessor processor) {
 
         // Assign Hardware Blocks
         spr = processor.getSpecialRegisters();
         regs = processor.getRegisterFile();
-        lockReg = processor.getLockRegister();
 
         // Parse the data
         final String opName = data.getOpName();
@@ -95,7 +87,7 @@ public class MbAddi implements Instruction, Builder {
         regA = InstructionParser.parseRegister(data.getR2());
 
         // Get rB
-        imm = data.getImm();
+        regB = InstructionParser.parseRegister(data.getR3());
 
         // Get rD
         regD = InstructionParser.parseRegister(data.getR1());
@@ -107,30 +99,19 @@ public class MbAddi implements Instruction, Builder {
      * Executes the instruction
      */
     public void execute() {
-        if(!execute) {
-            console.warn("execute: this object is a builder, not an instruction" +
-                    " ("+this.getClass()+")");
-            return;
-        }
-
-
 
         // If cBit, get carry from MSR of special register file
-        int carry = 0;
+        int carry = 1;
         if(cBit) {
             carry = spr.getCarryBit();
         }
 
-        // Get rA from register file
+        // Get rA and rB from register file
         int rA = regs.read(regA); // rA <- RF
-
-
-        // Check if the previous instruction was an Imm
-        int immediate = lockReg.processImmediate(imm);
-
+        int rB = regs.read(regB); // rB <- RF
 
         // Do summation
-        int rD = rA + immediate + carry;
+        int rD = rB + ~rA + carry;
 
         // Store result in register file
         regs.write(regD, rD);// RD <- rD
@@ -138,7 +119,7 @@ public class MbAddi implements Instruction, Builder {
         // If kBit, calculate carry out
         if(!kBit) {
             // SPR <- CarryOut
-            int carryOut = BitOperations.getCarryOutAdd(rA, immediate, carry);
+            int carryOut = BitOperations.getCarryOutRsub(rA, rB, carry);
             spr.writeCarryBit(carryOut);
         }
     }
@@ -151,19 +132,6 @@ public class MbAddi implements Instruction, Builder {
       return IS_BRANCH;
    }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder(100);
-        
-        builder.append("cBit:"+cBit+"\n");
-        builder.append("kBit:"+kBit+"\n");
-        builder.append("regA:"+regA+"\n");
-        builder.append("regB:"+imm+"\n");
-        builder.append("regD:"+regD+"\n");
-        
-        return builder.toString();
-    }
-
 
     // INSTANCE VARIABLES
 
@@ -171,16 +139,14 @@ public class MbAddi implements Instruction, Builder {
     private final boolean cBit;
     private final boolean kBit;
     private final int regA;
-    private final int imm;
+    private final int regB;
     private final int regD;
-    private final boolean execute;
 
     // Hardware Blocks
     // Register file
     // Special Registers
     private final SpecialPurposeRegisters spr;
     private final RegisterFile regs;
-    private final LockRegister lockReg;
 
     // Constants
     private final String C_CHAR = "c";
@@ -188,8 +154,5 @@ public class MbAddi implements Instruction, Builder {
     
     private final int LATENCY = 1;
     private final boolean IS_BRANCH = false;
-
-    // Utilities
-    private final Console console = DefaultConsole.getConsole();
 
 }
