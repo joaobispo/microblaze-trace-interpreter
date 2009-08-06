@@ -217,7 +217,7 @@ public class MemorySegment {
 
       int index = 0;
       for (int i = isWritten.nextSetBit(0); i >= 0; i = isWritten.nextSetBit(i + 1)) {
-         writtenAddresses[index] = i<<2;
+         writtenAddresses[index] = wordAddress(i);
          index++;
       }
 
@@ -231,7 +231,7 @@ public class MemorySegment {
     * @return
     */
    private int arrayIndex(int wordAddress) {
-       return wordAddress >>> 2;
+       return wordAddress >>> WORD_POWER;
    }
 
    /**
@@ -242,7 +242,7 @@ public class MemorySegment {
     * @return
     */
    private int wordAddress(int arrayIndex) {
-       return arrayIndex << 2;
+       return arrayIndex << WORD_POWER;
    }
 
     // INSTANCE VARIABLES
@@ -252,6 +252,10 @@ public class MemorySegment {
     private final int sizePower;
 
     // Constants
+    /**
+     * Exponent of a base two power. Size of the word, in bytes. 
+     */
+    public static final int WORD_POWER = 2;
     private final int BASE_2 = 2;
     private final int INT_SIZE = 32;
     private final int HALFWORD_SIZE = 16;
