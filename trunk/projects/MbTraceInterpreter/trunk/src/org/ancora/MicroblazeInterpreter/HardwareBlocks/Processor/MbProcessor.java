@@ -25,7 +25,7 @@ import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.Instruc
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
-import org.ancora.MicroblazeInterpreter.Instructions.Instructions;
+import org.ancora.MicroblazeInterpreter.Instructions.InstructionBuilder;
 import org.ancora.MicroblazeInterpreter.Instructions.Instruction;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
@@ -103,7 +103,7 @@ public class MbProcessor implements MicroBlazeProcessor {
 
         TraceData data = InstructionParser.parseInstruction(instruction);
         String opName = data.getOpName();
-        Instructions instBuilder = getInstruction(opName);
+        InstructionBuilder instBuilder = getInstruction(opName);
         // Check if instruction could be built
         if (instBuilder == null) {
             return;
@@ -124,11 +124,11 @@ public class MbProcessor implements MicroBlazeProcessor {
      * @param opName
      * @return
      */
-    private Instructions getInstruction(String opName) {
-        Instructions instBuilder = null;
+    private InstructionBuilder getInstruction(String opName) {
+        InstructionBuilder instBuilder = null;
 
         try {
-            instBuilder = Instructions.valueOf(opName);
+            instBuilder = InstructionBuilder.valueOf(opName);
         } catch (IllegalArgumentException ex) {
             if (!notImplemented.contains(opName)) {
                 console.warn("getInstruction: Asked for a MicroBlaze Instruction " +

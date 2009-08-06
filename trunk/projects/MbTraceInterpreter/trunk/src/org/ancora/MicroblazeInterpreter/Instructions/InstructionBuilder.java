@@ -30,7 +30,7 @@ import org.ancora.MicroblazeInterpreter.Parser.TraceData;
  * 
  * @author Joao Bispo
  */
-public enum Instructions implements Builder {
+public enum InstructionBuilder implements Builder {
 
    add(new MbAdd()),
    addc(new MbAdd()),
@@ -49,7 +49,7 @@ public enum Instructions implements Builder {
     *
     * @param builder
     */
-   private Instructions(Builder builder) {
+   private InstructionBuilder(Builder builder) {
       this.builder = builder;
    }
 
