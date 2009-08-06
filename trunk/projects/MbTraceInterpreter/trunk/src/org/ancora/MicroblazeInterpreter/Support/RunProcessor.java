@@ -20,10 +20,7 @@ package org.ancora.MicroblazeInterpreter.Support;
 import java.io.File;
 import java.util.Arrays;
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.Bucket;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedDataMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedSegments;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataBucket;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemoryPlus;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.MemorySegment;
@@ -63,8 +60,8 @@ public class RunProcessor {
       File traceFile = disk.safeFile(traceFilepath);
 
       //testDataMemory();
-      testCachedSegments();
-      /*
+      //testCachedSegments();
+      
       // Load the processor
       MicroBlazeProcessor mb = loadMicroBlaze(traceFile);
       // Execute it
@@ -75,7 +72,7 @@ public class RunProcessor {
       showRegs(mb);
       showClock(mb);
 
-       */
+       
     }
 
     /**
@@ -107,7 +104,8 @@ public class RunProcessor {
       RegisterFile registerFile = new RegisterFileArray();
       LockRegister lockRegister = new LockRegister();
       Clock clock = new CycleClock(lockRegister, specialRegisters);
-
+      DataMemory dataMemory = new CachedSegments();
+      DataMemoryPlus dataMemoryPlus = new DataMemoryPlus(dataMemory);
       // Prepare Memory
 
       // Write register 2
@@ -117,13 +115,13 @@ public class RunProcessor {
       // Write Carry Bit
       //specialRegisters.writeCarryBit(1);
 
-      DataMemory mem = new CachedDataMemory(4);
-      mem.storeWord(0, 100);
-      mem.storeWord(1, 200);
+      //DataMemory mem = new CachedDataMemory(4);
+      //DataMemory mem = new CachedSegments();
+      //mem.storeWord(0, 100);
+      //mem.storeWord(1, 200);
       // System.out.println(mem.read(0));
-      mem.storeWord(1024*1024, 1000);
-
-       System.out.println("Memory:"+Arrays.toString(mem.writtenWordAddresses()));
+      //mem.storeWord(1024*1024, 1000);
+      //System.out.println("Memory:"+Arrays.toString(mem.writtenWordAddresses()));
 
       // Initialize Processor
       MicroBlazeProcessor mb = new MbProcessor(
@@ -131,7 +129,8 @@ public class RunProcessor {
               specialRegisters,
               registerFile,
               lockRegister,
-              clock);
+              clock,
+              dataMemoryPlus);
 
       return mb;
    }

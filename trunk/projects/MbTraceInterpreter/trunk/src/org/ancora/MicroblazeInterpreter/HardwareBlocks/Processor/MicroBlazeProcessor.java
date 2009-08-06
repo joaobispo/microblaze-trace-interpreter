@@ -17,6 +17,7 @@
 
 package org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor;
 
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemoryPlus;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
@@ -69,4 +70,11 @@ public interface MicroBlazeProcessor {
     * @return
     */
    public Clock getClock();
+
+   /**
+    * Access to the Data Memory.
+    * 
+    * @return
+    */
+   public DataMemoryPlus getDataMemory();
 }

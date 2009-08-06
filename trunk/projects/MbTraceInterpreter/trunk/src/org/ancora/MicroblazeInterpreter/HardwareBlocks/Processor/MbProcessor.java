@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemoryPlus;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
@@ -44,13 +45,15 @@ public class MbProcessor implements MicroBlazeProcessor {
             SpecialPurposeRegisters specialRegisters,
             RegisterFile registerFile,
             LockRegister lockRegister,
-            Clock clock) {
+            Clock clock,
+            DataMemoryPlus dataMemoryPlus) {
 
         this.instructionMemory = instructionMemory;
         this.specialRegisters = specialRegisters;
         this.registerFile = registerFile;
         this.lockRegister = lockRegister;
         this.clock = clock;
+        this.dataMemoryPlus = dataMemoryPlus;
 
 
         notImplemented = new HashSet<String>();
@@ -171,6 +174,14 @@ public class MbProcessor implements MicroBlazeProcessor {
         return lockRegister;
     }
 
+    public Clock getClock() {
+        return clock;
+    }
+
+    public DataMemoryPlus getDataMemory() {
+        return dataMemoryPlus;
+    }
+
     // INSTANCE VARIABLES
     // State
     private final InstructionMemory instructionMemory;
@@ -178,15 +189,14 @@ public class MbProcessor implements MicroBlazeProcessor {
     private final RegisterFile registerFile;
     private final LockRegister lockRegister;
     private final Clock clock;
+    private final DataMemoryPlus dataMemoryPlus;
 
     // Debug
     private final Set<String> notImplemented;
     // Utilities
     private final Console console = DefaultConsole.getConsole();
 
-    public Clock getClock() {
-        return clock;
-    }
+
 
 
 
