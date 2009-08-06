@@ -76,6 +76,8 @@ public class CachedSegments implements DataMemory {
      */
     public MemorySegment getSegment(int wordAddress) {
         final int segmentAddress = segmentAddress(wordAddress);
+        System.out.println("Address:"+wordAddress);
+//        System.out.println("SegmentAddress:"+segmentAddress);
 
         MemorySegment segment = getSegmentFromCache(segmentAddress);
         //return segments.get(segmentAddress);
