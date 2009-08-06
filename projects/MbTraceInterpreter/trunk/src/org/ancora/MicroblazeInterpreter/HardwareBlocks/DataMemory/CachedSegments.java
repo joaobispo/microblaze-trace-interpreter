@@ -76,8 +76,6 @@ public class CachedSegments implements DataMemory {
      */
     public MemorySegment getSegment(int wordAddress) {
         final int segmentAddress = segmentAddress(wordAddress);
-        System.out.println("Address:"+wordAddress);
-//        System.out.println("SegmentAddress:"+segmentAddress);
 
         MemorySegment segment = getSegmentFromCache(segmentAddress);
         //return segments.get(segmentAddress);
@@ -181,8 +179,6 @@ public class CachedSegments implements DataMemory {
      * @return
      */
     private int recoverWordAddress(int segmentAddress, int IndexAddress) {
-        System.out.println("Segment Address:"+segmentAddress);
-        System.out.println("Word Index:"+IndexAddress);
         // Calculate the correct address
         final int lowerBits = IndexAddress;
         final int higherBitsPosition = SEGMENT_SIZE_POWER + MemorySegment.WORD_POWER;

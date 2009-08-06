@@ -128,15 +128,7 @@ public class MbAddi implements MbInstruction, MbBuilder {
 
 
         // Check if the previous instruction was an Imm
-        int immediate;
-        
-        if(lockReg.isLocked()) {
-            int upperHalf = lockReg.getImmediate();
-            immediate = BitOperations.writeBits(16, 16, upperHalf, this.imm);
-        }
-        else {
-            immediate = imm;
-        }
+        int immediate = lockReg.processImmediate(imm);
 
 
         // Do summation

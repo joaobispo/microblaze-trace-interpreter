@@ -17,6 +17,7 @@
 
 package org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers;
 
+import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.jCommons.Console;
 import org.ancora.jCommons.DefaultConsole;
 
@@ -52,7 +53,7 @@ public class LockRegister {
     /**
      * @return true, if register is in state locked.
      */
-    public boolean isLocked() {
+    private boolean isLocked() {
         if (state.equals(lockState.locked)) {
             return true;
         } else {
@@ -61,9 +62,28 @@ public class LockRegister {
     }
 
     /**
+     * If the register is locked, returns a word with the given immediate as the
+     * bottom-half, and the locked immediate as the upper-half. Else, returns
+     * the given immediate unaltered.
+     * 
+     * @param imm
+     * @return
+     */
+    public int processImmediate(int imm) {
+        if(isLocked()) {
+            int upperHalf = this.immediate;
+            return BitOperations.writeBits(16, 16, upperHalf, imm);
+        }
+        else {
+            return imm;
+        }
+    }
+
+    /**
      * Returns the stored value, but only if is in locked state.
      * @return the stored value if is in locked state, 0 otherwise.
      */
+    /*
     public int getImmediate() {
         if(state == lockState.locked) {
             return immediate;
@@ -74,6 +94,7 @@ public class LockRegister {
             return 0;
         }
     }
+     */
 
     /**
      * Advances the state machine.
