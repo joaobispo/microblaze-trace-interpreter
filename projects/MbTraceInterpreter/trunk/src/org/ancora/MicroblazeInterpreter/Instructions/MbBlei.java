@@ -61,7 +61,7 @@ public class MbBlei implements Instruction, Builder {
         spr = processor.getSpecialRegisters();
 
         // Get rD
-        regA = InstructionParser.parseRegister(data.getRd());
+        regA = InstructionParser.parseRegister(data.getR1());
 
         // Get rB
         imm = data.getImm();

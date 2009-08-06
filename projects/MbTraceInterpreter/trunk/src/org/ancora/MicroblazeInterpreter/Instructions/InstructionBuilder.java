@@ -54,7 +54,20 @@ public enum InstructionBuilder implements Builder {
    blti(new MbBlti()),
    bltid(new MbBlti()),
    bnei(new MbBnei()),
-   bneid(new MbBnei());
+   bneid(new MbBnei()),
+   br(new MbBr()),
+   bra(new MbBr()),
+   brd(new MbBr()),
+   brad(new MbBr()),
+   brld(new MbBr()),
+   brald(new MbBr()),
+   bri(new MbBri()),
+   brai(new MbBri()),
+   brid(new MbBri()),
+   braid(new MbBri()),
+   brlid(new MbBri()),
+   bralid(new MbBri());
+
 
    /**
     * Constructor

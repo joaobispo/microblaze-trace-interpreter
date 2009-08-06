@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.ancora.MicroblazeInterpreter.Configuration.MbConfiguration;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemoryPlus;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
@@ -46,7 +47,8 @@ public class MbProcessor implements MicroBlazeProcessor {
             RegisterFile registerFile,
             LockRegister lockRegister,
             Clock clock,
-            DataMemoryPlus dataMemoryPlus) {
+            DataMemoryPlus dataMemoryPlus,
+            MbConfiguration configuration) {
 
         this.instructionMemory = instructionMemory;
         this.specialRegisters = specialRegisters;
@@ -54,6 +56,7 @@ public class MbProcessor implements MicroBlazeProcessor {
         this.lockRegister = lockRegister;
         this.clock = clock;
         this.dataMemoryPlus = dataMemoryPlus;
+        this.configuration = configuration;
 
 
         notImplemented = new HashSet<String>();
@@ -190,11 +193,16 @@ public class MbProcessor implements MicroBlazeProcessor {
     private final LockRegister lockRegister;
     private final Clock clock;
     private final DataMemoryPlus dataMemoryPlus;
+    private final MbConfiguration configuration;
 
     // Debug
     private final Set<String> notImplemented;
     // Utilities
     private final Console console = DefaultConsole.getConsole();
+
+    public MbConfiguration getConfiguration() {
+        return configuration;
+    }
 
 
 

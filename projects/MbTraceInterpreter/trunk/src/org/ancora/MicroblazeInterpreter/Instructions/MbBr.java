@@ -17,35 +17,36 @@
 package org.ancora.MicroblazeInterpreter.Instructions;
 
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
-import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 
 /**
- *  Implements the MicroBlaze Branch Immediate if Less Than.
+ *  Implements the MicroBlaze Unconditional Branch.
  * 
- * <p> Includes the instructions blti and bltid.
+ * <p> Includes the instructions br, bra, brd, brad, brld and brald.
  *
  * @author Joao Bispo
  */
-public class MbBlti implements Instruction, Builder {
+public class MbBr implements Instruction, Builder {
 
     /**
      * Constructor for using this object as a MbBuilder
      */
-    public MbBlti() {
+    public MbBr() {
         dBit = false;
-        regA = -1;
-        imm = -1;
+        aBit = false;
+        lBit = false;
+        regB = -1;
+        regD = -1;
         regs = null;
-        lockReg = null;
+        //lockReg = null;
         spr = null;
     }
 
     public Instruction build(TraceData data, MicroBlazeProcessor processor) {
-        return new MbBlti(data, processor);
+        return new MbBr(data, processor);
     }
 
     /**
@@ -54,25 +55,40 @@ public class MbBlti implements Instruction, Builder {
      * @param data parsed trace data
      * @param processor a MicroBlaze processor
      */
-    public MbBlti(TraceData data, MicroBlazeProcessor processor) {
+    public MbBr(TraceData data, MicroBlazeProcessor processor) {
         // Assign Hardware Blocks
         regs = processor.getRegisterFile();
-        lockReg = processor.getLockRegister();
+        //lockReg = processor.getLockRegister();
         spr = processor.getSpecialRegisters();
 
         // Get rD
-        regA = InstructionParser.parseRegister(data.getR1());
+        regD = InstructionParser.parseRegister(data.getR1());
 
         // Get rB
-        imm = data.getImm();
+        regB = InstructionParser.parseRegister(data.getR2());
 
-        // Check bitC
+        // Check bitD
         final boolean hasD = data.getOpName().contains(D_CHAR);
-        if(hasD) {
+        if (hasD) {
             dBit = true;
-        }
-        else {
+        } else {
             dBit = false;
+        }
+
+        // Check bitL
+        final boolean hasL = data.getOpName().contains(L_CHAR);
+        if (hasL) {
+            lBit = true;
+        } else {
+            lBit = false;
+        }
+
+        // Check bitA
+        final boolean hasA = data.getOpName().contains(A_CHAR);
+        if (hasA) {
+            aBit = true;
+        } else {
+            aBit = false;
         }
 
     }
@@ -81,32 +97,28 @@ public class MbBlti implements Instruction, Builder {
      * Executes the instruction
      */
     public void execute() {
-        // Get rA from register file
-        int rA = regs.read(regA); // rA <- RF
-
-        if(rA < 0) {
-            int immediate = lockReg.processImmediate(imm);
-            int pc = spr.getPc();
-            spr.writePc(pc + immediate);
-            branchTaken = true;
-        } else {
-            spr.incrementPc();
-            branchTaken = false;
+        // If L bit, store Program Counter
+        if (lBit) {
+            regs.write(regD, spr.getPc());
         }
 
+        if (aBit) {
+            spr.writePc(regB);
+        } else {
+            int pc = spr.getPc();
+            spr.writePc(pc + regB);
+        }
+        
     }
 
     public int latency() {
-        if(!branchTaken) {
-            return 1;
+
+        if (dBit) {
+            return 2;
         } else {
-            if(dBit) {
-                return 2;
-            }
-            else {
-                return 3;
-            }
+            return 3;
         }
+
     }
 
     public boolean isBranch() {
@@ -114,17 +126,18 @@ public class MbBlti implements Instruction, Builder {
     }
     // INSTANCE VARIABLES
     // State
-    private final int regA;
-    private final int imm;
+    private final int regD;
+    private final int regB;
     private final boolean dBit;
-    private boolean branchTaken;
-
+    private final boolean lBit;
+    private final boolean aBit;
     // Hardware Blocks
     private final RegisterFile regs;
-    private final LockRegister lockReg;
+    //private final LockRegister lockReg;
     private final SpecialPurposeRegisters spr;
-    
     // Constants
     private final boolean IS_BRANCH = true;
     private final String D_CHAR = "d";
+    private final String L_CHAR = "d";
+    private final String A_CHAR = "d";
 }
