@@ -25,6 +25,7 @@ import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedDataMemo
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedSegments;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataBucket;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemoryPlus;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.MemorySegment;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
@@ -117,12 +118,12 @@ public class RunProcessor {
       //specialRegisters.writeCarryBit(1);
 
       DataMemory mem = new CachedDataMemory(4);
-      mem.write(0, 100);
-      mem.write(1, 200);
+      mem.storeWord(0, 100);
+      mem.storeWord(1, 200);
       // System.out.println(mem.read(0));
-      mem.write(1024*1024, 1000);
+      mem.storeWord(1024*1024, 1000);
 
-       System.out.println("Memory:"+Arrays.toString(mem.getWrittenAddresses()));
+       System.out.println("Memory:"+Arrays.toString(mem.writtenWordAddresses()));
 
       // Initialize Processor
       MicroBlazeProcessor mb = new MbProcessor(
@@ -208,7 +209,8 @@ public class RunProcessor {
         // Second halfword = 1
         value = 65536;
 
-        MemorySegment seg = new MemorySegment(segmentSize);
+        MemorySegment segment = new MemorySegment(segmentSize);
+        DataMemoryPlus seg = new DataMemoryPlus(segment);
 
         seg.storeWord(0, 1);
         System.out.println(seg.loadWord(0));
@@ -227,16 +229,26 @@ public class RunProcessor {
     }
 
     private static void testCachedSegments() {
-        CachedSegments segs = new CachedSegments();
+        //CachedSegments segs = new CachedSegments();
+        MemorySegment segs = new MemorySegment(10);
 
-        System.out.println(segs.getSegment(0));
-        System.out.println(segs.getSegment(4095));
-        System.out.println(segs.getSegment(4095));
-        System.out.println(segs.getSegment(4095));
-        System.out.println(segs.getSegment(4095));
-        System.out.println(segs.getSegment(4096));
+        segs.storeWord(0, 1);
+        segs.storeWord(4, 1);
+        segs.storeWord(8, 1);
+        segs.storeWord(1000, 1);
+        //segs.storeWord(1023, 1);
+        segs.storeWord(1024, 1);
+        segs.storeWord(4095, 2);
+        segs.storeWord(4096, 3);
+        //System.out.println(segs.getSegment(0));
+        //System.out.println(segs.getSegment(4095));
+        //System.out.println(segs.getSegment(4095));
+        //System.out.println(segs.getSegment(4095));
+        //System.out.println(segs.getSegment(4095));
+        //System.out.println(segs.getSegment(4096));
 
-        System.out.println(segs.stats());
+        //System.out.println(segs.stats());
+        System.out.println(Arrays.toString(segs.writtenWordAddresses()));
     }
 
 

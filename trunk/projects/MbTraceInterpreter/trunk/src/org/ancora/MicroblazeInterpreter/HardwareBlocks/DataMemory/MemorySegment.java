@@ -27,7 +27,7 @@ import org.ancora.jCommons.DefaultConsole;
  *
  * @author Joao Bispo
  */
-public class MemorySegment {
+public class MemorySegment implements DataMemory {
 
     /**
      * Creates a byte-addressed memory with 2^sizePower 32-bit words.
@@ -99,114 +99,7 @@ public class MemorySegment {
    }
 
 
-   /**
-    * Loads a halfword (16 bits) from the halfword aligned memory location
-    * indicated by halfwordAddress. The least significant bit is ignored.
-    * If the address is bigger than the memory segment, the higher bits
-    * are ignored.
-    *
-    * <p>If position has not been written yet, a warning is shown.
-    *
-    * @param halfWord
-    * @return
-    */
-   public int loadHalfword(int halfwordAddress) {
-      // Read complete word
-      int word = loadWord(halfwordAddress);
 
-      // Extract which halfword
-      final int offset = (halfwordAddress >>> 1) & MASK_1_BIT;
-      // Put requested halfword at position 0
-      int halfword = word >>> (offset * HALFWORD_SIZE);
-
-      return halfword & MASK_16_BITS;
-   }
-
-   /**
-    * Stores the contents of value, into the halfword aligned memory location
-    * indicated by halfwordAddress.
-    * The least significant bit is ignored.
-    * If the address is bigger than the memory segment, the higher bits
-    * are ignored.
-    *
-    * @param wordAddress a byte-addressed, word-aligned memory location
-    *
-    * @param halfwordAddress
-    * @param value
-    */
-   public void storeHalfword(int halfwordAddress, int value) {
-       int word = 0;
-       
-       // Check if word has been written
-       int index = arrayIndex(halfwordAddress);
-       if(isWritten.get(index)) {
-           // Read complete word
-           word = loadWord(halfwordAddress);
-       }
-
-       // Extract which halfword
-       final int offset = (halfwordAddress >>> 1) & MASK_1_BIT;
-       final int position = offset * HALFWORD_SIZE;
-
-       final int finalWord = BitOperations.writeBits(position, HALFWORD_SIZE, value, word);
-
-       // Store word
-       storeWord(halfwordAddress, finalWord);
-   }
-
-   /**
-    * Loads a byte (8 bits) from the byte aligned memory location
-    * indicated by halfwordAddress.
-    * If the address is bigger than the memory segment, the higher bits
-    * are ignored.
-    *
-    * <p>If position has not been written yet, a warning is shown.
-    *
-    * @param halfWord
-    * @return
-    */
-   public int loadByte(int byteAddress) {
-      // Read complete word
-      int word = loadWord(byteAddress);
-
-      // Extract which byte
-      final int offset = byteAddress & MASK_2_BITS;
-      // Put requested byte at position 0
-      int byt = word >>> (offset * BYTE_SIZE);
-
-      return byt & MASK_8_BITS;
-   }
-
-   /**
-    * Stores the contents of value, into the byte aligned memory location
-    * indicated by byteAddress.
-    * If the address is bigger than the memory segment, the higher bits
-    * are ignored.
-    *
-    * @param wordAddress a byte-addressed, word-aligned memory location
-    *
-    * @param halfwordAddress
-    * @param value
-    */
-   public void storeByte(int byteAddress, int value) {
-       int word = 0;
-
-       // Check if word has been written
-       int index = arrayIndex(byteAddress);
-       if(isWritten.get(index)) {
-           // Read complete word
-           word = loadWord(byteAddress);
-       }
-
-       // Extract which halfword
-       final int offset = byteAddress  & MASK_2_BITS;
-       final int position = offset * BYTE_SIZE;
-
-       final int finalWord = BitOperations.writeBits(position, BYTE_SIZE, value, word);
-
-       // Store word
-       storeWord(byteAddress, finalWord);
-   }
 
    /**
     * @return an array with the word-aligned addresses which have been written.
@@ -223,6 +116,11 @@ public class MemorySegment {
 
       return writtenAddresses;
    }
+
+    public boolean isWordWritten(int wordAddress) {
+        final int index = arrayIndex(wordAddress);
+        return isWritten.get(index);
+    }
 
    /**
     * Transforms word-aligned addresses in indexes for accessing the array.
@@ -256,18 +154,17 @@ public class MemorySegment {
      * Exponent of a base two power. Size of the word, in bytes. 
      */
     public static final int WORD_POWER = 2;
+
     private final int BASE_2 = 2;
     private final int INT_SIZE = 32;
-    private final int HALFWORD_SIZE = 16;
-    private final int BYTE_SIZE = 8;
     private final int HEX_STRING_SIZE = 8;
-    private final int MASK_16_BITS = 0xFFFF;
-    private final int MASK_8_BITS = 0xFF;
-    private final int MASK_2_BITS = 0x3;
-    private final int MASK_1_BIT = 0x1;
 
     // Utilities
     private final Console console = DefaultConsole.getConsole();
+
+
+
+
 
 
 }
