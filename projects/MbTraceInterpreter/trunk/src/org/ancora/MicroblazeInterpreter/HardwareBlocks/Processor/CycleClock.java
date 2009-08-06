@@ -20,7 +20,7 @@ package org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialRegister;
-import org.ancora.MicroblazeInterpreter.Instructions.MbInstruction;
+import org.ancora.MicroblazeInterpreter.Instructions.Instruction;
 
 /**
  * Implementation of the Clock interface.
@@ -47,7 +47,7 @@ public class CycleClock implements Clock {
      * 
      * @param instruction
      */
-    public void step(MbInstruction instruction) {
+    public void step(Instruction instruction) {
         // Advance Lock Register
         lockReg.step();
 

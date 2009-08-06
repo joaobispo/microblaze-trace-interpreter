@@ -30,7 +30,7 @@ import org.ancora.jCommons.DefaultConsole;
  *
  * @author Joao
  */
-public class MbImm implements MbInstruction, MbBuilder {
+public class MbImm implements Instruction, Builder {
 
         /**
      * Constructor for using this object as a MbBuilder
@@ -68,7 +68,7 @@ public class MbImm implements MbInstruction, MbBuilder {
         return IS_BRANCH;
     }
 
-    public MbInstruction build(TraceData data, MicroBlazeProcessor processor) {
+    public Instruction build(TraceData data, MicroBlazeProcessor processor) {
         return new MbImm(data, processor);
     }
 

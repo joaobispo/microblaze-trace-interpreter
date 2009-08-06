@@ -36,7 +36,7 @@ import org.ancora.jCommons.DefaultConsole;
  *
  * @author Joao Bispo
  */
-public class MbAddi implements MbInstruction, MbBuilder {
+public class MbAddi implements Instruction, Builder {
 
     /**
      * Constructor for using this object as a MbBuilder
@@ -53,7 +53,7 @@ public class MbAddi implements MbInstruction, MbBuilder {
         lockReg = null;
     }
 
-    public MbInstruction build(TraceData data, MicroBlazeProcessor processor) {
+    public Instruction build(TraceData data, MicroBlazeProcessor processor) {
         return new MbAddi(data, processor);
     }
 

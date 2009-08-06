@@ -21,18 +21,44 @@ import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProce
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 
 /**
- * Interface for Builders of Instructions.
+ * Contaisn the instructions supported by this interpreter.
  *
+ * <p>To add a new instruction, after creating a class which implements the
+ * MbInstruction and the MbBuilder interface, add a new enum which initializes
+ * with a default constructor of that class.
+ * 
+ * 
  * @author Joao Bispo
  */
-public interface MbBuilder {
+public enum Instructions implements Builder {
+
+   add(new MbAdd()),
+   addc(new MbAdd()),
+   addk(new MbAdd()),
+   addkc(new MbAdd()),
+   addi(new MbAddi()),
+   addic(new MbAddi()),
+   addik(new MbAddi()),
+   addikc(new MbAddi()),
+   imm(new MbImm()),
+   and(new MbAnd()),
+   andi(new MbAndi());
 
    /**
-    * Builds a MicroBlaze instruction, ready to execute.
+    * Constructor
     *
-    * @param data Data parsed from a trace instruction
-    * @param processor a MicroBlaze Processor
-    * @return MicroBlaze instruction ready to execute
+    * @param builder
     */
-   public MbInstruction build(TraceData data, MicroBlazeProcessor processor);
+   private Instructions(Builder builder) {
+      this.builder = builder;
+   }
+
+
+
+   public Instruction build(TraceData data, MicroBlazeProcessor processor) {
+      return builder.build(data, processor);
+   }
+
+   // INSTANCE VARIABLES
+   private final Builder builder;
 }
