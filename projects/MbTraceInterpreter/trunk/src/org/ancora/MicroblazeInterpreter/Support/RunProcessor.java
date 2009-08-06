@@ -24,6 +24,7 @@ import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.Bucket;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedDataMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataBucket;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.DataMemory;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.MemorySegment;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.InstructionMemory;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.TraceMemory;
@@ -59,6 +60,8 @@ public class RunProcessor {
       System.out.println("Opening trace \""+traceFilepath+"\"...");
       File traceFile = disk.safeFile(traceFilepath);
 
+      testDataMemory();
+      /*
       // Load the processor
       MicroBlazeProcessor mb = loadMicroBlaze(traceFile);
       // Execute it
@@ -69,6 +72,7 @@ public class RunProcessor {
       showRegs(mb);
       showClock(mb);
 
+       */
     }
 
     /**
@@ -190,6 +194,35 @@ public class RunProcessor {
 
    // INSTANCE VARIABLES
    private static final int INDEX_TRACE_FILE = 0;
+
+    private static void testDataMemory() {
+        
+        int segmentSize;
+        int value;
+        
+        // 1024 words
+        segmentSize= 10;
+
+        // Second halfword = 1
+        value = 65536;
+
+        MemorySegment seg = new MemorySegment(segmentSize);
+
+        seg.storeWord(0, 1);
+        System.out.println(seg.loadWord(0));
+
+        //seg.storeHalfword(2, 1);
+        //System.out.println(seg.loadWord(0));
+        //System.out.println(seg.loadHalfword(2));
+
+        seg.storeByte(3, 1);
+        System.out.println(seg.loadWord(0));
+        System.out.println(seg.loadByte(3));
+
+        seg.storeByte(1000, 2);
+
+        System.out.println("Addresses:"+Arrays.toString(seg.writtenWordAddresses()));
+    }
 
 
 
