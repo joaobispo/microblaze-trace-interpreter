@@ -15,28 +15,30 @@
  *  under the License.
  */
 
-package org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor;
-
-import org.ancora.MicroblazeInterpreter.Instructions.Instruction;
+package org.ancora.MicroblazeInterpreter.Instructions;
 
 /**
- * Represents the clock of the processor.
+ * Interface for MicroBlaze instructions.
  *
- * @author Joao
+ * @author Joao Bispo
  */
-public interface Clock {
+public interface Instruction {
 
-    /**
-     * Advances the state of the processor, depending on the instruction.
-     * 
-     * @param instruction
-     */
-    public void step(Instruction instruction);
+   /**
+    * Executes the MicroBlaze instruction, modifying the registers and the 
+    * memory as necessary.
+    */
+   public void execute();
 
-    /**
-     * Returns the total latency, in cycles, registered by the clock until now.
-     * 
-     * @return
-     */
-    public int getLatency();
+   /**
+    * @return the latency of the instruction, in number of cycles
+    */
+   public int latency();
+
+   /**
+    * @return true if the instruction is a branch and updates the 
+    * Program Counter, false otherwise.
+    */
+   public boolean isBranch();
+
 }

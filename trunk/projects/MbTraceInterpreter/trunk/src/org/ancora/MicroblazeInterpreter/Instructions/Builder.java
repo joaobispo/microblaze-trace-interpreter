@@ -17,28 +17,22 @@
 
 package org.ancora.MicroblazeInterpreter.Instructions;
 
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
+import org.ancora.MicroblazeInterpreter.Parser.TraceData;
+
 /**
- * Interface for MicroBlaze instructions.
+ * Interface for Builders of Instructions.
  *
  * @author Joao Bispo
  */
-public interface MbInstruction {
+public interface Builder {
 
    /**
-    * Executes the MicroBlaze instruction, modifying the registers and the 
-    * memory as necessary.
+    * Builds a MicroBlaze instruction, ready to execute.
+    *
+    * @param data Data parsed from a trace instruction
+    * @param processor a MicroBlaze Processor
+    * @return MicroBlaze instruction ready to execute
     */
-   public void execute();
-
-   /**
-    * @return the latency of the instruction, in number of cycles
-    */
-   public int latency();
-
-   /**
-    * @return true if the instruction is a branch and updates the 
-    * Program Counter, false otherwise.
-    */
-   public boolean isBranch();
-
+   public Instruction build(TraceData data, MicroBlazeProcessor processor);
 }

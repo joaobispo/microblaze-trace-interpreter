@@ -29,7 +29,7 @@ import org.ancora.MicroblazeInterpreter.Parser.TraceData;
  *
  * @author Joao Bispo
  */
-public class MbAndi implements MbInstruction, MbBuilder {
+public class MbAndi implements Instruction, Builder {
 
     /**
      * Constructor for using this object as a MbBuilder
@@ -42,7 +42,7 @@ public class MbAndi implements MbInstruction, MbBuilder {
         lockReg = null;
     }
 
-    public MbInstruction build(TraceData data, MicroBlazeProcessor processor) {
+    public Instruction build(TraceData data, MicroBlazeProcessor processor) {
         return new MbAndi(data, processor);
     }
 

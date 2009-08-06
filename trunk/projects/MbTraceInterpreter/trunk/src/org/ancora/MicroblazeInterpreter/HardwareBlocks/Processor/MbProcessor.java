@@ -25,8 +25,8 @@ import org.ancora.MicroblazeInterpreter.HardwareBlocks.InstructionMemory.Instruc
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
-import org.ancora.MicroblazeInterpreter.Instructions.InstructionBuilder;
-import org.ancora.MicroblazeInterpreter.Instructions.MbInstruction;
+import org.ancora.MicroblazeInterpreter.Instructions.Instructions;
+import org.ancora.MicroblazeInterpreter.Instructions.Instruction;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 import org.ancora.MicroblazeInterpreter.Support.NumberCounter;
@@ -103,13 +103,13 @@ public class MbProcessor implements MicroBlazeProcessor {
 
         TraceData data = InstructionParser.parseInstruction(instruction);
         String opName = data.getOpName();
-        InstructionBuilder instBuilder = getInstruction(opName);
+        Instructions instBuilder = getInstruction(opName);
         // Check if instruction could be built
         if (instBuilder == null) {
             return;
         }
         // Build instruction
-        MbInstruction inst = instBuilder.build(data, this);
+        Instruction inst = instBuilder.build(data, this);
 
         // Executes Instructions
         inst.execute();
@@ -124,11 +124,11 @@ public class MbProcessor implements MicroBlazeProcessor {
      * @param opName
      * @return
      */
-    private InstructionBuilder getInstruction(String opName) {
-        InstructionBuilder instBuilder = null;
+    private Instructions getInstruction(String opName) {
+        Instructions instBuilder = null;
 
         try {
-            instBuilder = InstructionBuilder.valueOf(opName);
+            instBuilder = Instructions.valueOf(opName);
         } catch (IllegalArgumentException ex) {
             if (!notImplemented.contains(opName)) {
                 console.warn("getInstruction: Asked for a MicroBlaze Instruction " +
