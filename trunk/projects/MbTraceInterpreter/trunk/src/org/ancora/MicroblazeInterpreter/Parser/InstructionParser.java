@@ -162,8 +162,16 @@ public class InstructionParser {
      * @return
      */
     public static int parseRegister(String register) {
-        String tempRegister = register.substring(BEGIN_INDEX_REG);
-
+        //String tempRegister = "";
+        //try {
+         String   tempRegister = register.substring(BEGIN_INDEX_REG);
+        //} catch (NullPointerException ex) {
+        //    System.out.println("parserRegister: Could not parse supposed " +
+        //            "register string (" + register + ").");
+        //    ex.printStackTrace();
+        //    System.exit(1);
+        //}
+        
         int returnReg = 0;
 
         try {

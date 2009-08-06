@@ -84,6 +84,7 @@ public enum InstructionBuilder implements Builder {
    or(new MbOr()),
    ori(new MbOri()),
    rsub(new MbRsub()),
+   rsubk(new MbRsub()),
    rtsd(new MbRtsd()),
    sb(new MbSb()),
    sbi(new MbSbi()),

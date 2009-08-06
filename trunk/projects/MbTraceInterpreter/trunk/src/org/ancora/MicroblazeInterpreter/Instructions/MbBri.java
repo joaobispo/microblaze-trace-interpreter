@@ -68,8 +68,7 @@ public class MbBri implements Instruction, Builder {
         spr = processor.getSpecialRegisters();
         config = processor.getConfiguration();
 
-        // Get rD
-        regD = InstructionParser.parseRegister(data.getR1());
+
 
         // Get imm
         imm = data.getImm();
@@ -86,8 +85,11 @@ public class MbBri implements Instruction, Builder {
         final boolean hasL = data.getOpName().contains(L_CHAR);
         if (hasL) {
             lBit = true;
+            // Get rD
+            regD = InstructionParser.parseRegister(data.getR1());
         } else {
             lBit = false;
+            regD = -1;
         }
 
         // Check bitA
