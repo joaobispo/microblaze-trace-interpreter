@@ -30,13 +30,14 @@ public class BitOperations {
 
     /**
      * Calculates the carryOut of the sum of rA with rB and carry.
+     * Operation is rA + rB + carry.
      *
      * @param rA
      * @param rB
      * @param carry the carry from the previous operation. Should be 0 or 1.
      * @return 1 if there is carry out, or 0 if not.
      */
-    public static int getCarryOut(int rA, int rB, int carry) {
+    public static int getCarryOutAdd(int rA, int rB, int carry) {
         if(carry != 0 && carry != 1) {
             console.warn("getCarryOut: Carry is different than 0 or 1 ("+
                     carry+")");
@@ -66,6 +67,44 @@ public class BitOperations {
     }
 
     /**
+     * Calculates the carryOut of the reverse subtraction of rA with rB and 
+     * carry. Operation is rB + ~rA + carry.
+     *
+     * @param rA
+     * @param rB
+     * @param carry the carry from the previous operation. Should be 0 or 1.
+     * @return 1 if there is carry out, or 0 if not.
+     */
+    public static int getCarryOutRsub(int rA, int rB, int carry) {
+        if(carry != 0 && carry != 1) {
+            console.warn("getCarryOut: Carry is different than 0 or 1 ("+
+                    carry+")");
+        }
+
+        //System.out.println("rA:"+Integer.toBinaryString(rA));
+        //System.out.println("rB:"+Integer.toBinaryString(rB));
+
+        // Extend operands to long and mask them
+        long lRa = rA & MASK_32_BITS;
+        long lRb = rB & MASK_32_BITS;
+        // Carry must be 0 or 1, it shouldn't need to be masked.
+        long lCarry = carry;
+
+
+        //System.out.println("lRa:"+Long.toBinaryString(lRa));
+        //System.out.println("lRb:"+Long.toBinaryString(lRb));
+
+        // Do the summation
+        long result = lRb + ~lRa + lCarry;
+
+        //System.out.println("Result:"+Long.toBinaryString(result));
+
+        // Get the carry bit
+        int carryOut = (int) ((result & MASK_BIT_33) >>> 32);
+        return carryOut;
+    }
+
+    /**
      * Performs a 32-bit unsigned division.
      * 
      * @param a
@@ -79,6 +118,19 @@ public class BitOperations {
          return (int) (la / lb);
     }
 
+    /**
+     * Returns true if a is greater than b.
+     * 
+     * @param a
+     * @param b
+     * @return
+     */
+    public static boolean unsignedComp(int a, int b) {
+            // Unsigned Comparison
+            long longA = a & MASK_32_BITS;
+            long longB = b & MASK_32_BITS;
+            return longA > longB;
+    }
    /**
     * Sets a specific bit of an int.
     *

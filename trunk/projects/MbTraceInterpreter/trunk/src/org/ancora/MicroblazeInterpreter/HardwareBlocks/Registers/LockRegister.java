@@ -53,7 +53,7 @@ public class LockRegister {
     /**
      * @return true, if register is in state locked.
      */
-    private boolean isLocked() {
+    public boolean isLocked() {
         if (state.equals(lockState.locked)) {
             return true;
         } else {

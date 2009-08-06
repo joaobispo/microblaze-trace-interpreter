@@ -72,6 +72,24 @@ public interface SpecialPurposeRegisters {
     */
    public void writeCarryBit(int carryBit);
 
+   /**
+    * @param dzo the new value of the bit of the
+    * Status Register (MSR)
+    */
+   public void writeDzoBit(int dzo);
+
+   /**
+    * @param dec the new value of the bit in the
+    * Error Status Register (ESR)
+    */
+   public void writeDecBit(int dec);
+
+   /**
+    * @param ec the new value of the 5 bits in the
+    * Error Status Register (ESR)
+    */
+   public void writeEcBits(int ec);
+
      /**
     * @return The contents of the Program Counter (PC)
     */

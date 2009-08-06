@@ -114,7 +114,7 @@ public class ExperimentArithmetic {
         int rB = -1;
         int carry = 0;
 
-        int carryOut = BitOperations.getCarryOut(rA, rB, carry);
+        int carryOut = BitOperations.getCarryOutAdd(rA, rB, carry);
 
         System.out.println("CarryOut:"+carryOut);
     }
