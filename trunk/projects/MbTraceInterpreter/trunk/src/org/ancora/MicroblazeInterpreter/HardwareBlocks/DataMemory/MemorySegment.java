@@ -42,24 +42,10 @@ public class MemorySegment implements DataMemory {
         this.sizePower = sizePower;
    }
 
-   /**
-    * Loads a word (32 bits) from the word aligned memory location indicated
-    * by wordAddress. The two least significant bits are ignored. If the address
-    * is bigger than the memory segment, the higher bits are ignored.
-    *
-    * <p>If position has not been written yet, a warning is shown.
-    *
-    * @param wordAddress a byte-addressed, word-aligned memory location
-    * @return
-    */
-   public int loadWord(int wordAddress) {
-        // Truncate higher bits of index
-        int offset = INT_SIZE - sizePower;
-        int index = wordAddress << offset;
-        index = index >>> offset;
-        
+
+   public int loadWord(int wordAddress) {     
         // Transform to the index used to address the array
-        index = arrayIndex(index);
+        final int index = arrayIndex(wordAddress);
         
 
         if(!isWritten.get(index)) {
@@ -86,13 +72,8 @@ public class MemorySegment implements DataMemory {
     * @param value
     */
    public void storeWord(int wordAddress, int value) {
-        // Truncate higher bits of index
-        int offset = INT_SIZE - sizePower;
-        int index = wordAddress << offset;
-        index = index >>> offset;
-
         // Transform to the index used to address the array
-        index = arrayIndex(index);
+        final int index = arrayIndex(wordAddress);
 
         words[index] = value;
         isWritten.set(index);
@@ -129,7 +110,12 @@ public class MemorySegment implements DataMemory {
     * @return
     */
    private int arrayIndex(int wordAddress) {
-       return wordAddress >>> WORD_POWER;
+        // Truncate higher bits of address
+        int offset = INT_SIZE - sizePower - WORD_POWER;
+        int index = wordAddress << offset;
+        index = index >>> offset;
+        // Transform from byte-addressed to word-addressed.
+        return index >>> WORD_POWER;
    }
 
    /**

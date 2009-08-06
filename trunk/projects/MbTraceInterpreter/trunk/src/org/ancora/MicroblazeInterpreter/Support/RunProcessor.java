@@ -229,8 +229,8 @@ public class RunProcessor {
     }
 
     private static void testCachedSegments() {
-        //CachedSegments segs = new CachedSegments();
-        MemorySegment segs = new MemorySegment(10);
+        CachedSegments segs = new CachedSegments();
+        //MemorySegment segs = new MemorySegment(10);
 
         segs.storeWord(0, 1);
         segs.storeWord(4, 1);
