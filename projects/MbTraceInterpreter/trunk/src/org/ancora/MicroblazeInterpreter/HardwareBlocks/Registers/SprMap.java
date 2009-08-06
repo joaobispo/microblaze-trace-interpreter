@@ -111,6 +111,19 @@ public class SprMap implements SpecialPurposeRegisters {
             write(SpecialRegister.rmsr, msr);          
     }
 
+    public int getPc() {
+        return read(SpecialRegister.rpc);
+    }
+
+    public void writePc(int pc) {
+        write(SpecialRegister.rpc, pc);
+    }
+
+    public void incrementPc() {
+            int pc = read(SpecialRegister.rpc);
+            write(SpecialRegister.rpc, pc + 4);
+    }
+
    //INSTANCE VARIABLES
    // State
    private final Map<Integer,Integer> registerFile;
@@ -122,5 +135,7 @@ public class SprMap implements SpecialPurposeRegisters {
 
    // Utilities
    private final Console console = DefaultConsole.getConsole();
+
+
 
 }

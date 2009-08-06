@@ -17,31 +17,35 @@
 package org.ancora.MicroblazeInterpreter.Instructions;
 
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Processor.MicroBlazeProcessor;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.LockRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFile;
+import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 import org.ancora.MicroblazeInterpreter.Parser.InstructionParser;
 import org.ancora.MicroblazeInterpreter.Parser.TraceData;
 
 /**
- *  Implements the MicroBlaze Logical AND.
+ *  Implements the MicroBlaze Branch Immediate if Greater or Equal.
  * 
- * <p> Includes the instruction and.
+ * <p> Includes the instructions bgei and bgeid.
  *
  * @author Joao Bispo
  */
-public class MbAnd implements Instruction, Builder {
+public class MbBgei implements Instruction, Builder {
 
     /**
      * Constructor for using this object as a MbBuilder
      */
-    public MbAnd() {
+    public MbBgei() {
+        dBit = false;
         regA = -1;
-        regB = -1;
-        regD = -1;
+        imm = -1;
         regs = null;
+        lockReg = null;
+        spr = null;
     }
 
     public Instruction build(TraceData data, MicroBlazeProcessor processor) {
-        return new MbAnd(data, processor);
+        return new MbBgei(data, processor);
     }
 
     /**
@@ -50,18 +54,26 @@ public class MbAnd implements Instruction, Builder {
      * @param data parsed trace data
      * @param processor a MicroBlaze processor
      */
-    public MbAnd(TraceData data, MicroBlazeProcessor processor) {
+    public MbBgei(TraceData data, MicroBlazeProcessor processor) {
         // Assign Hardware Blocks
         regs = processor.getRegisterFile();
-
-        // Get rA
-        regA = InstructionParser.parseRegister(data.getRa());
-
-        // Get rB
-        regB = InstructionParser.parseRegister(data.getRb());
+        lockReg = processor.getLockRegister();
+        spr = processor.getSpecialRegisters();
 
         // Get rD
-        regD = InstructionParser.parseRegister(data.getRd());
+        regA = InstructionParser.parseRegister(data.getRd());
+
+        // Get rB
+        imm = data.getImm();
+
+        // Check bitC
+        final boolean hasD = data.getOpName().contains(D_CHAR);
+        if(hasD) {
+            dBit = true;
+        }
+        else {
+            dBit = false;
+        }
 
     }
 
@@ -69,21 +81,32 @@ public class MbAnd implements Instruction, Builder {
      * Executes the instruction
      */
     public void execute() {
-
-        // Get rA and rB from register file
+        // Get rA from register file
         int rA = regs.read(regA); // rA <- RF
-        int rB = regs.read(regB); // rB <- RF
 
-        // Do operation
-        int rD = rA & rB;
-
-        // Store result in register file
-        regs.write(regD, rD);// RD <- rD
+        if(rA >= 0) {
+            int immediate = lockReg.processImmediate(imm);
+            int pc = spr.getPc();
+            spr.writePc(pc + immediate);
+            branchTaken = true;
+        } else {
+            spr.incrementPc();
+            branchTaken = false;
+        }
 
     }
 
     public int latency() {
-        return LATENCY;
+        if(!branchTaken) {
+            return 1;
+        } else {
+            if(dBit) {
+                return 2;
+            }
+            else {
+                return 3;
+            }
+        }
     }
 
     public boolean isBranch() {
@@ -92,10 +115,16 @@ public class MbAnd implements Instruction, Builder {
     // INSTANCE VARIABLES
     // State
     private final int regA;
-    private final int regB;
-    private final int regD;
+    private final int imm;
+    private final boolean dBit;
+    private boolean branchTaken;
+
     // Hardware Blocks
     private final RegisterFile regs;
-    private final int LATENCY = 1;
-    private final boolean IS_BRANCH = false;
+    private final LockRegister lockReg;
+    private final SpecialPurposeRegisters spr;
+    
+    // Constants
+    private final boolean IS_BRANCH = true;
+    private final String D_CHAR = "d";
 }

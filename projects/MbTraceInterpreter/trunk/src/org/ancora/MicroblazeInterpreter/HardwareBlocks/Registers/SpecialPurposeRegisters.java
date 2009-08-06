@@ -71,4 +71,19 @@ public interface SpecialPurposeRegisters {
     * Status Register (MSR)
     */
    public void writeCarryBit(int carryBit);
+
+     /**
+    * @return The contents of the Program Counter (PC)
+    */
+   public int getPc();
+
+   /**
+    * @param carryBit the new value of Program Counter (PC)
+    */
+   public void writePc(int pc);
+
+   /**
+    * Increments the value of the Program Counter (PC) by 4.
+    */
+    public void incrementPc();
 }

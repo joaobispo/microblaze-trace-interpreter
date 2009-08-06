@@ -53,8 +53,9 @@ public class CycleClock implements Clock {
 
         // Advance Program Counter if instruction is not branch
         if (!instruction.isBranch()) {
-            int pc = spr.read(SpecialRegister.rpc);
-            spr.write(SpecialRegister.rpc, pc + 4);
+            spr.incrementPc();
+            //int pc = spr.read(SpecialRegister.rpc);
+            //spr.write(SpecialRegister.rpc, pc + 4);
         }
 
         // Update latency
