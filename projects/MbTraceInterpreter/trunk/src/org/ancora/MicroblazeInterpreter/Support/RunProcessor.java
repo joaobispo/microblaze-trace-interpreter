@@ -18,7 +18,13 @@
 package org.ancora.MicroblazeInterpreter.Support;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.ancora.MicroblazeInterpreter.Commons.BitOperations;
 import org.ancora.MicroblazeInterpreter.Configuration.MbConfiguration;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.DataMemory.CachedSegments;
@@ -37,8 +43,15 @@ import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.RegisterFileArr
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialPurposeRegisters;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SpecialRegister;
 import org.ancora.MicroblazeInterpreter.HardwareBlocks.Registers.SprMap;
+import org.ancora.jCommons.Console;
+import org.ancora.jCommons.DefaultConsole;
 import org.ancora.jCommons.Disk;
+import org.ancora.jCommons.FileConsole;
 
+/**
+ * TODO: Discover how to read ç and ã into a properties.
+ *
+ */
 /**
  * Runs a trace in the MicroBlaze Processor Interpreter
  *
@@ -50,19 +63,45 @@ public class RunProcessor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Disk disk = Disk.getDisk();
+      Disk disk = Disk.getDisk();
 
+      // Check if config file exists
+      // Read Properties file
+      File propertiesFile = new File(configFile);
+      if(!propertiesFile.isFile()) {
+          System.out.println("Could not locate the config file ("+configFile+")");
+          System.out.println("Exiting...");
+          System.exit(1);
+      }
+      config = file2Properties(propertiesFile);
+
+      // Process Command line arguments
       String[] cleanArgs = processArgs(args);
 
       String traceFilepath = cleanArgs[INDEX_TRACE_FILE];
 
+      // Check if trace file exists
+      File traceFile = new File(traceFilepath);
+      if(!traceFile.isFile()) {
+          System.out.println("Could not locate the trace file ("+traceFilepath+")");
+          System.out.println("Exiting...");
+          System.exit(1);
+      }
+
       // Get trace file
       System.out.println("Opening trace \""+traceFilepath+"\"...");
-      File traceFile = disk.safeFile(traceFilepath);
+      //File traceFile = disk.safeFile(traceFilepath);
 
-      //testDataMemory();
-      //testCachedSegments();
-      
+      // Initialize Console
+      boolean writeOutputFile = Boolean.valueOf(config.getProperty(ConfigParam.writeFile.name()));
+      if(writeOutputFile) {
+          String outFilename = config.getProperty(ConfigParam.outputFile.name());
+          File outFile = disk.safeFile(outFilename);
+          console = new FileConsole(outFile);
+      } else {
+          console = DefaultConsole.getConsole();
+      }
+
       // Load the processor
       MicroBlazeProcessor mb = loadMicroBlaze(traceFile);
       // Execute it
@@ -70,24 +109,35 @@ public class RunProcessor {
 
       // Inspect it after execution
       showSpr(mb);
+      console.print("--------------------------------");
       showRegs(mb);
+      console.print("--------------------------------");
       showClock(mb);
 
-       
+       console.close();
     }
 
     /**
-     * Process the command line arguments
+     * Process the command line arguments.
+     *
+     * <p>If there is no arguments, read the configuration from config.properties.
+     * Else, use default values and read the
      * 
      * @param args
      * @return
      */
    private static String[] processArgs(String[] args) {
-        if(args.length != 1) {
-            System.out.println("Usage: [Trace_File]");
-            System.out.println("Example: ./traces/fdct_trace_without_optimization.txt");
-            System.exit(1);
-        }
+       if (args.length == 0) {
+           args = new String[1];
+           args[0] = config.getProperty(ConfigParam.inputTrace.name());
+           System.out.println("Args:"+args[0]);
+       } else if (args.length > 1) {
+           System.out.println("Usage: [Trace_File]");
+           System.out.println("Example: ./traces/fdct_trace_without_optimization.txt");
+           System.out.println("If no arguments are given, the trace file defined in " +
+                   configFile + " is used.");
+           System.exit(1);
+       }
 
         return args;
    }
@@ -145,7 +195,8 @@ public class RunProcessor {
      */
     private static void showSpr(MicroBlazeProcessor mb) {
         SpecialPurposeRegisters spr = mb.getSpecialRegisters();
-        System.out.println("Special Register Values:");
+        //System.out.println("Special Register Values:");
+        console.print("Special Register Values:");
         for (SpecialRegister reg : SpecialRegister.values()) {
             int value = spr.read(reg);
             String stringValue;
@@ -153,20 +204,24 @@ public class RunProcessor {
                 case rmsr:
                     stringValue = Integer.toBinaryString(value);
                     stringValue = BitOperations.padBinaryString(stringValue, 32);
-                    System.out.println(reg.name() + ":" + stringValue);
+                    //System.out.println(reg.name() + ":" + stringValue);
+                    console.print(reg.name() + ":" + stringValue);
                     break;
                 case resr:
                     stringValue = Integer.toBinaryString(value);
                     stringValue = BitOperations.padBinaryString(stringValue, 32);
-                    System.out.println(reg.name() + ":" + stringValue);
+                    //System.out.println(reg.name() + ":" + stringValue);
+                    console.print(reg.name() + ":" + stringValue);
                     break;
                 case rpc:
                     stringValue = Integer.toHexString(value);
                     stringValue = BitOperations.padHexString(stringValue, 8);
-                    System.out.println(reg.name() + ":" + stringValue);
+                    //System.out.println(reg.name() + ":" + stringValue);
+                    console.print(reg.name() + ":" + stringValue);
                     break;
                 default:
-                    System.out.println(reg.name() + ":" + value);
+                    //System.out.println(reg.name() + ":" + value);
+                    console.print(reg.name() + ":" + value);
                     break;
 
             }
@@ -181,9 +236,11 @@ public class RunProcessor {
      */
     private static void showRegs(MicroBlazeProcessor mb) {
         RegisterFile regs = mb.getRegisterFile();
-        System.out.println("General Purpose Registers Values:");
+        //System.out.println("General Purpose Registers Values:");
+        console.print("General Purpose Registers Values:");
         for(int i=0; i<regs.numRegisters(); i++) {
-            System.out.println("[" + i + "]:" + regs.read(i));
+            console.print("[" + i + "]:" + regs.read(i));
+            //System.out.println("[" + i + "]:" + regs.read(i));
         }
     }
 
@@ -194,7 +251,8 @@ public class RunProcessor {
      */
     private static void showClock(MicroBlazeProcessor mb) {
         Clock clock = mb.getClock();
-        System.out.println("Number o clock cycles:"+clock.getLatency());
+        //System.out.println("Number o clock cycles:"+clock.getLatency());
+        console.print("Number o clock cycles:"+clock.getLatency());
     }
 
    // INSTANCE VARIABLES
@@ -252,9 +310,45 @@ public class RunProcessor {
         //System.out.println(segs.stats());
         System.out.println(Arrays.toString(segs.writtenWordAddresses()));
     }
+    
+    /**
+     * Loads a configuration file into a Java Properties object.
+     * Returns the object
+     *
+     * @param filename
+     * @return
+     */
+    public static Properties file2Properties(File file) {
+        Properties props = new Properties();
+        FileInputStream stream = null;
+        InputStreamReader streamReader = null;
 
 
+        try {
+            stream = new FileInputStream(file);
+            streamReader = new InputStreamReader(stream, charSet);
+            props.load(streamReader);
+        } catch (IOException ex) {
+            Logger.getLogger(RunProcessor.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
+        return props;
+    }
+
+
+    enum ConfigParam {
+        inputTrace,
+        writeFile,
+        outputFile;
+    }
+
+    // INSTANCE VARIABLES
+    // State
+        private static Properties config;
+        private static Console console;
+    // Constants
+    private static final String configFile = "config.properties";
+    private static final String charSet = "UTF-8";
 
 
 
