@@ -1,0 +1,11 @@
+## Options for the MicroBlaze Trace Interpreter
+
+##Input
+# Input trace file to open, if one is not specified in the input
+inputTrace = ./traces/fdct_trace_sem_optimização.txt
+
+##Output
+# Write output of program to file
+writeFile = true
+# Output file
+outputFile = ./output.txt
